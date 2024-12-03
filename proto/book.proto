@@ -1,0 +1,47 @@
+syntax = "proto3";
+
+package book;
+
+enum Genre {
+    FANTASY = 0;
+    CLASSICS = 1;
+    DYSTOPIAN = 2;
+    HISTORICAL_FICTION = 3;
+    MYSTERY = 4;
+    CONTEMPORARY_FICTION = 5;
+    ADVENTURE = 6;
+}
+
+message Book {
+    int32 bookId = 1;
+    string bookName = 2;
+    Genre genre = 3;
+    string author = 4;
+}
+message GetAllBookRequest {
+
+}
+message GetAllBookResponse{
+     repeated Book books = 1;
+}
+
+message GetBookByAuthorRequest {
+    string author = 1;
+}
+
+message GetBookByAuthorResponse {
+    repeated Book books = 1;
+}
+
+message GetBookByIdRequest {
+    int32 bookId = 1;
+}
+message GetBookByIdResponse {
+    Book book = 1;
+}
+
+service BookService {
+    rpc GetAllBook (GetAllBookRequest) returns (GetAllBookResponse){};
+    rpc GetBookByAuthor (GetBookByAuthorRequest) returns (GetBookByAuthorResponse){};
+    rpc GetBookById (GetBookByIdRequest) returns (GetBookByIdResponse){};
+}
