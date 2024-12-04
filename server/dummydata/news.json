@@ -1,63 +1,62 @@
 [
-    {
-      "bookId": 1001,
-      "bookName": "Harry Potter",
-      "author": "J.K. Rowling",
-      "genre": "Fantasy"
-    },
-    {
-      "bookId": 1002,
-      "bookName": "The Hobbit",
-      "author": "J.R.R. Tolkien",
-      "genre": "Fantasy"
-    },
-    {
-      "bookId": 1003,
-      "bookName": "The Great Gatsby",
-      "author": "F. Scott Fitzgerald",
-      "genre": "Classics"
-    },
-    {
-      "bookId": 1004,
-      "bookName": "1984",
-      "author": "George Orwell",
-      "genre": "Dystopian"
-    },
-    {
-      "bookId": 1005,
-      "bookName": "To Kill a Mockingbird",
-      "author": "Harper Lee",
-      "genre": "Historical Fiction"
-    },
-    {
-      "bookId": 1006,
-      "bookName": "The Catcher in the Rye",
-      "author": "J.D. Salinger",
-      "genre": "Classics"
-    },
-    {
-      "bookId": 1007,
-      "bookName": "The Da Vinci Code",
-      "author": "Dan Brown",
-      "genre": "Mystery"
-    },
-    {
-      "bookId": 1008,
-      "bookName": "The Lightning Thief",
-      "author": "Rick Riordan",
-      "genre": "Fantasy"
-    },
-    {
-      "bookId": 1009,
-      "bookName": "The Casual Vacancy",
-      "author": "J.K. Rowling",
-      "genre": "Contemporary Fiction"
-    },
-    {
-      "bookId": 1010,
-      "bookName": "The Alchemist",
-      "author": "Paulo Coelho",
-      "genre": "Adventure"
-    }
-  ]
-  
+  {
+    "bookId": 1001,
+    "bookName": "Harry Potter",
+    "author": "J.K. Rowling",
+    "genre": "Fantasy"
+  },
+  {
+    "bookId": 1002,
+    "bookName": "The Hobbit",
+    "author": "J.R.R. Tolkien",
+    "genre": "Fantasy"
+  },
+  {
+    "bookId": 1003,
+    "bookName": "The Great Gatsby",
+    "author": "F. Scott Fitzgerald",
+    "genre": "Classics"
+  },
+  {
+    "bookId": 1004,
+    "bookName": "1984",
+    "author": "George Orwell",
+    "genre": "Dystopian"
+  },
+  {
+    "bookId": 1005,
+    "bookName": "To Kill a Mockingbird",
+    "author": "Harper Lee",
+    "genre": "Historical Fiction"
+  },
+  {
+    "bookId": 1006,
+    "bookName": "The Catcher in the Rye",
+    "author": "J.D. Salinger",
+    "genre": "Classics"
+  },
+  {
+    "bookId": 1007,
+    "bookName": "The Da Vinci Code",
+    "author": "Dan Brown",
+    "genre": "Mystery"
+  },
+  {
+    "bookId": 1008,
+    "bookName": "The Lightning Thief",
+    "author": "Rick Riordan",
+    "genre": "Fantasy"
+  },
+  {
+    "bookId": 1009,
+    "bookName": "The Casual Vacancy",
+    "author": "J.K. Rowling",
+    "genre": "Contemporary Fiction"
+  },
+  {
+    "bookId": 1010,
+    "bookName": "The Alchemist",
+    "author": "Paulo Coelho",
+    "genre": "Adventure"
+  }
+]

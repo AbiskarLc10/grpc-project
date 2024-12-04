@@ -1,7 +1,72 @@
 const grpc = require("@grpc/grpc-js");
+const fs = require("fs/promises");
+const path = require("path");
 const Books = require("../dummydata/news.json");
-
+const filePath = path.resolve(__dirname, "../dummydata/news.json");
 class BookService {
+  AddBook = async (call, callback) => {
+    try {
+      const { book } = call.request;
+
+      if (!book) {
+        return callback({
+          details: "Please provide book details",
+          code: grpc.status.INVALID_ARGUMENT,
+        });
+      }
+      const data = await fs.readFile(filePath, "utf-8");
+
+      let fileData = JSON.parse(data);
+
+      fileData = [...fileData, book];
+
+      await fs.writeFile(filePath, JSON.stringify(fileData), "utf-8");
+
+      return callback(null, { message: "Book Added successfully" });
+    } catch (error) {
+      return callback({
+        details: "Failed to add book",
+        code: grpc.status.INTERNAL,
+      });
+    }
+  };
+
+  DeleteBook = async (call, callback) => {
+    try {
+      const { bookId } = call.request;
+
+      console.log(bookId)
+      if (!bookId) {
+        return callback({
+          details: "Please provide book id to delete",
+          code: grpc.status.INVALID_ARGUMENT,
+        });
+      }
+
+      const file = await fs.readFile(filePath, "utf-8");
+      let fileData = JSON.parse(file);
+
+      const bookToBeDeleted = Books.find((book) => book.bookId === bookId);
+
+      if (!bookToBeDeleted) {
+        return callback({
+          details: "Book not found",
+          code: grpc.status.NOT_FOUND,
+        });
+      }
+
+      fileData = fileData.filter((book) => book.bookId !== bookId);
+
+      await fs.writeFile(filePath, JSON.stringify(fileData));
+
+      return callback(null, { success: true });
+    } catch (error) {
+      return callback({
+        details: "Failed to add delete",
+        code: grpc.status.INTERNAL,
+      });
+    }
+  };
   GetAllBook = (call, callback) => {
     try {
       return callback(null, { books: Books });
