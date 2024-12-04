@@ -31,11 +31,58 @@ class BookService {
     }
   };
 
+  UpdateBook = async (call, callback) => {
+    try {
+      const { bookId, bookName, genre, author } = call.request;
+
+      if (!bookId) {
+        return callback({
+          details: "Id not provided",
+          code: grpc.status.INVALID_ARGUMENT,
+        });
+      }
+
+      let newBookData = {};
+      if (bookName) newBookData.bookName = bookName;
+      if (genre) newBookData.genre = genre;
+      if (author) newBookData.author = author;
+
+      const file = await fs.readFile(filePath, "utf-8");
+      let fileData = JSON.parse(file);
+
+      let bookFound = false;
+      fileData = fileData.map((book) => {
+        if (book.bookId === bookId) {
+          bookFound = true;
+          return { ...book, ...newBookData };
+        }
+        return book;
+      });
+
+      if (!bookFound) {
+        return callback({
+          details: "Book not found",
+          code: grpc.status.NOT_FOUND,
+        });
+      }
+
+      await fs.writeFile(filePath, JSON.stringify(fileData, null, 2));
+
+      callback(null, { message: "Book updated successfully" });
+    } catch (error) {
+      console.log(error);
+      return callback({
+        details: "Failed to update book",
+        code: grpc.status.INTERNAL,
+      });
+    }
+  };
+
   DeleteBook = async (call, callback) => {
     try {
       const { bookId } = call.request;
 
-      console.log(bookId)
+      console.log(bookId);
       if (!bookId) {
         return callback({
           details: "Please provide book id to delete",

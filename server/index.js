@@ -13,7 +13,6 @@ const packageDefinations = protoloader.loadSync(
 const bookProto = grpc.loadPackageDefinition(packageDefinations);
 const bookService = bookProto.book.BookService.service;
 
-console.log(bookService)
 const server = new grpc.Server();
 server.addService(bookService, new BookService());
 

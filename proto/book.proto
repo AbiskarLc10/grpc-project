@@ -51,10 +51,23 @@ message DeleteBookRequest {
 message DeleteBookResponse {
     bool success = 1;
 }
+
+message UpdateBookRequest {
+    int32 bookId = 1;
+    optional string bookName = 2;
+    optional Genre genre = 3;
+    optional string author = 4;
+}
+
+message UpdateBookResponse {
+    string message = 1;
+}
+
 service BookService {
     rpc AddBook (AddBookRequest) returns (AddBookResponse){};
     rpc DeleteBook (DeleteBookRequest) returns (DeleteBookResponse) {};
     rpc GetAllBook (GetAllBookRequest) returns (GetAllBookResponse){};
     rpc GetBookByAuthor (GetBookByAuthorRequest) returns (GetBookByAuthorResponse){};
     rpc GetBookById (GetBookByIdRequest) returns (GetBookByIdResponse){};
+    rpc UpdateBook (UpdateBookRequest) returns (UpdateBookResponse) {};
 }
