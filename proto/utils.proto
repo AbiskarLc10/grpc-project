@@ -1,0 +1,29 @@
+syntax = "proto3";
+
+enum Genre {
+    FANTASY = 0;
+    CLASSICS = 1;
+    DYSTOPIAN = 2;
+    HISTORICAL_FICTION = 3;
+    MYSTERY = 4;
+    CONTEMPORARY_FICTION = 5;
+    ADVENTURE = 6;
+}
+
+message Author {
+    string id = 1;
+    string name = 2;
+    string email = 3;
+    string date_of_birth = 4;
+    uint32 books_count = 5;
+    Genre genre = 6;
+    optional string profileImage = 7;
+}
+
+message Book {
+    int32 bookId = 1;
+    string bookName = 2;
+    Genre genre = 3;
+    string author_id = 4;
+    string published_date = 5;
+}

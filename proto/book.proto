@@ -2,22 +2,9 @@ syntax = "proto3";
 
 package book;
 
-enum Genre {
-    FANTASY = 0;
-    CLASSICS = 1;
-    DYSTOPIAN = 2;
-    HISTORICAL_FICTION = 3;
-    MYSTERY = 4;
-    CONTEMPORARY_FICTION = 5;
-    ADVENTURE = 6;
-}
+import "utils.proto";
 
-message Book {
-    int32 bookId = 1;
-    string bookName = 2;
-    Genre genre = 3;
-    string author = 4;
-}
+
 message GetAllBookRequest {
 
 }
@@ -56,7 +43,6 @@ message UpdateBookRequest {
     int32 bookId = 1;
     optional string bookName = 2;
     optional Genre genre = 3;
-    optional string author = 4;
 }
 
 message UpdateBookResponse {

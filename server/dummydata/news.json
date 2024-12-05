@@ -6,12 +6,6 @@
     "genre": "Fantasy"
   },
   {
-    "bookId": 1002,
-    "bookName": "The Hobbit",
-    "author": "J.R.R. Tolkien",
-    "genre": "Fantasy"
-  },
-  {
     "bookId": 1003,
     "bookName": "The Abiskar",
     "author": "F. Scott Fitzgerald",

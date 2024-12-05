@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package author;
+
+import "utils.proto";
+
+message SignUpRequest {
+    string name = 1;
+    string email = 2;
+    string password = 3;
+    string genre = 4;
+}
+
+message SignUpResponse {
+    Author author = 1;
+    bool success = 2;
+}
+message SignInRequest {
+    string email = 1;
+    string password = 2;
+}
+message SignInResponse {
+    Author author = 1;
+    bool success = 2;
+}
+
+message UpdateProfileRequest {
+    optional string name = 1;
+    optional string password = 2;
+    optional string new_password = 3;
+    optional string genre = 4;
+    optional string date_of_birth = 5;
+}
+
+message UpdateProfileResponse {
+      string message = 1;
+      bool success = 2;
+}
+
+
+message DeleteProfileRequest {
+    string id = 1;
+}
+message DeleteProfileResponse {
+    bool success = 1;
+}
+service AuthorService {
+    rpc SignUp(SignUpRequest) returns (SignUpResponse) {};
+    rpc SignIn(SignInRequest) returns (SignInResponse) {};
+    rpc UpdateProfile(UpdateProfileRequest) returns (UpdateProfileResponse) {};
+    rpc DeleteProfile(DeleteProfileRequest) returns (DeleteProfileResponse) {};
+}
