@@ -9,6 +9,7 @@ const {
 } = require("./config");
 const BookService = require("./service/BookService");
 const AuthorService = require("./service/AuthorService");
+const sequelize = require("./db/connection");
 
 const bookProtoPath = path.resolve(BOOK_PROTO_PATH);
 const authorProtoPath = path.resolve(AUTHOR_PROTO_PATH);
@@ -26,15 +27,23 @@ const server = new grpc.Server();
 server.addService(bookService, new BookService());
 server.addService(authorService, new AuthorService());
 
-server.bindAsync(
-  HOST_URL,
-  grpc.ServerCredentials.createInsecure(),
-  (error, port) => {
-    if (error) {
-      console.log(error);
-      console.log(`Failed to create grpc server =>  `, error.message);
-    } else {
-      console.log(`Grpc Server Listening at port ${port}`);
-    }
-  }
-);
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log("Connected to database Successfully");
+    server.bindAsync(
+      HOST_URL,
+      grpc.ServerCredentials.createInsecure(),
+      (error, port) => {
+        if (error) {
+          console.log(error);
+          console.log(`Failed to create grpc server =>  `, error.message);
+        } else {
+          console.log(`Grpc Server Listening at port ${port}`);
+        }
+      }
+    );
+  })
+  .catch((error) => {
+    console.log("Failed to connect to database", error);
+  });

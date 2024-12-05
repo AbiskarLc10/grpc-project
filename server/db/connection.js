@@ -12,13 +12,6 @@ const sequelize = new Sequelize({
   dialect: environmentConfig.dialect,
 });
 
-sequelize
-  .authenticate()
-  .then(() => {
-    console.log("Connected to database Successfully");
-  })
-  .catch((error) => {
-    console.log("Failed to connect to database", error);
-  });
+
 
 module.exports = sequelize;
