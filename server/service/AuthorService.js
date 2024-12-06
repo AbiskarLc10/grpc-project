@@ -1,8 +1,8 @@
 const grpc = require("@grpc/grpc-js");
 const bcrypt = require("bcrypt");
 const { Author } = require("../db/models/index");
-const validate = require("../utils/validateData");
-const { signUpSchema } = require("../utils/validationSchema");
+// const { signUpSchema } = require("../../client/utils/validationSchema");
+// const validate = require("../../client/utils/validateData");
 const { v4: uuidv4 } = require("uuid");
 const sequelize = require("../db/connection");
 const { QueryTypes } = require("sequelize");
@@ -18,7 +18,6 @@ class AuthorService {
           code: grpc.status.INVALID_ARGUMENT,
         });
       }
-      validate(call.request, signUpSchema);
 
       // const checkAuthorExists = await Author.findOne({
       //   where: {
@@ -35,7 +34,7 @@ class AuthorService {
         }
       );
 
-      if (checkAuthorExists.length===1) {
+      if (checkAuthorExists.length === 1) {
         return callback({
           details: "Author account already exists",
           code: grpc.status.ALREADY_EXISTS,
