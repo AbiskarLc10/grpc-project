@@ -1,7 +1,8 @@
-const customErrorHandler = require("../error/customError");
+const customErrorHandler = require("../errors/customError");
 const AuthorClient = require("../grpc-client/authorClient");
 const validate = require("../utils/validateData");
 const { signUpSchema } = require("../utils/validationSchema");
+const jwt = require("jsonwebtoken");
 
 const SignUpAuthor = async (req, res, next) => {
   try {
@@ -40,9 +41,19 @@ const SignInAuthor = async (req, res, next) => {
       });
     });
 
-    return res.status(201).json({ message: "Sign In Successful", ...response });
+    if (response.success) {
+      const token = jwt.sign(
+        { id: response.author.id },
+        process.env.PRIVATE_KEY,
+        { expiresIn: "1hr" }
+      );
+      return res
+        .cookie("token", token)
+        .status(201)
+        .json({ message: "Sign In Successful", ...response });
+    }
   } catch (error) {
     return customErrorHandler(error, next);
   }
 };
-module.exports = { SignUpAuthor };
+module.exports = { SignUpAuthor, SignInAuthor };

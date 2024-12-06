@@ -15,7 +15,6 @@ message Author {
     string name = 2;
     string email = 3;
     string date_of_birth = 4;
-    uint32 books_count = 5;
     Genre genre = 6;
     optional string profileImage = 7;
 }
