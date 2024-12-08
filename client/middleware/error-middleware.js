@@ -8,11 +8,14 @@ const errorMiddleWare = (err, req, res, next) => {
     const errorStatus = grpcErrorCodeMap[err.code];
     statusCode = errorStatus.httpStatus;
     message = errorStatus.message;
+    return res
+    .status(statusCode)
+    .json({ message: message, success: false, details: err.message });
   }
 
   return res
     .status(statusCode)
-    .json({ message: message, success: false, details: err.message });
+    .json({ message: message, success: false });
 };
 
 module.exports = errorMiddleWare;

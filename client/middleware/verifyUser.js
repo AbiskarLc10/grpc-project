@@ -4,9 +4,8 @@ const jwt = require("jsonwebtoken");
 const verifyUser = async (req, res, next) => {
   try {
     const [_, token] = req.headers.authorization.split(" ");
+    // const { token } = req.cookies;
     console.log(token);
-
-    console.log(next);
     if (!token) {
       return customErrorHandler(
         { code: 401, details: "Token not found" },

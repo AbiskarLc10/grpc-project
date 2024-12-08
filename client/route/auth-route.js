@@ -2,7 +2,7 @@ const express = require("express");
 const {
   SignUpAuthor,
   SignInAuthor,
-} = require("../Controllers/author-controllers");
+} = require("../Controllers/auth-controllers");
 const router = express.Router();
 
 router.route("/sign-up").post(SignUpAuthor);
