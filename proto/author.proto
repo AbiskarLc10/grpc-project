@@ -27,11 +27,10 @@ message SignInResponse {
 }
 
 message UpdateProfileRequest {
-    optional string name = 1;
-    optional string password = 2;
-    optional string new_password = 3;
-    optional string genre = 4;
-    optional string date_of_birth = 5;
+    string id = 1;
+    string name = 2;
+    Genre genre = 3;
+    string date_of_birth = 4;
 }
 
 message UpdateProfileResponse {

@@ -1,11 +1,8 @@
 const express = require("express");
-const {
-  SignUpAuthor,
-  SignInAuthor,
-} = require("../Controllers/author-controllers");
+const verifyUser = require("../middleware/verifyUser");
+const { UpdateAuthor } = require("../Controllers/author-controllers");
 const router = express.Router();
 
-router.route("/sign-up").post(SignUpAuthor);
-router.route("/sign-in").post(SignInAuthor);
+router.route("/update/:authorId").patch(verifyUser,UpdateAuthor);
 
 module.exports = router;

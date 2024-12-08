@@ -1,14 +1,20 @@
 const express = require("express");
 require("dotenv").config();
 const app = express();
+const cookieParser = require('cookie-parser')
 const port = process.env.PORT || 8000;
 const bookroute = require("./route/book-route");
-const authorroute = require("./route/author-route");
+const authroute = require("./route/auth-route");
+const authorroute = require("./route/author-route")
+
 const errorMiddleWare = require("./middleware/error-middleware");
 app.use(express.json());
+app.use(cookieParser())
 app.use("/api/books", bookroute);
 app.use("/api/author", authorroute);
+app.use("/api/auth",authroute)
 app.use(errorMiddleWare)
+
 
 app.listen(port, () => {
   console.log(`Listening at port ${port}`);
