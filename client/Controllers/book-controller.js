@@ -1,13 +1,16 @@
 const customErrorHandler = require("../errors/customError");
 const bookClient = require("../grpc-client/booksclient");
 
-const getAllBooks = async (req, res) => {
+const getAllBooks = async (req, res, next) => {
   try {
     const response = await new Promise((resolve, reject) => {
       bookClient.GetAllBook({}, (err, response) => {
         if (err) {
           console.error("Error calling GetAllBook:", err);
-          reject(new Error(err.details || "An unknown error occurred"));
+          reject({
+            details: err.details,
+            code: err.code,
+          });
         } else {
           resolve(response);
         }
@@ -21,7 +24,13 @@ const getAllBooks = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: error.message, success: false });
+    return customErrorHandler(
+      {
+        details: error.details || error.message,
+        code: error.code,
+      },
+      next
+    );
   }
 };
 
@@ -44,7 +53,7 @@ const getbooksByAuthor = async (req, res) => {
           console.log(error);
           reject({
             details: error.details,
-            code: error.code
+            code: error.code,
           });
         } else {
           resolve(response);
@@ -59,7 +68,13 @@ const getbooksByAuthor = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: error.message, success: false });
+    return customErrorHandler(
+      {
+        details: error.details || error.message,
+        code: error.code,
+      },
+      next
+    );
   }
 };
 
@@ -85,7 +100,13 @@ const getBookById = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: error.message, success: false });
+    return customErrorHandler(
+      {
+        details: error.details || error.message,
+        code: error.code,
+      },
+      next
+    );
   }
 };
 
@@ -130,15 +151,29 @@ const addBook = async (req, res, next) => {
   }
 };
 
-const deleteBookById = async (req, res) => {
+const deleteBookById = async (req, res, next) => {
   try {
-    const { bookId } = req.params;
+    const { bookId, authorId } = req.params;
+    const { id } = req.user;
+
+    if (id !== authorId) {
+      return customErrorHandler(
+        {
+          details: "This action is not allowed",
+          code: 403,
+        },
+        next
+      );
+    }
 
     const response = await new Promise((resolve, reject) => {
       bookClient.DeleteBook({ bookId }, (error, response) => {
         if (error) {
           console.log(error);
-          reject(new Error(error.details || " An unknown error occurred"));
+          reject({
+            details: error.details,
+            code: error.code,
+          });
         }
         resolve(response);
       });
@@ -150,20 +185,32 @@ const deleteBookById = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      message: error.message,
-      success: false,
-    });
+    return customErrorHandler(
+      {
+        details: error.details || error.message,
+        code: error.code,
+      },
+      next
+    );
   }
 };
 
 const updateBook = async (req, res) => {
   try {
-    const { bookId } = req.params;
+    const { bookId, authorId } = req.params;
+    const { id } = req.user;
+    const { bookName, published_date, genre } = req.body;
 
-    const { bookName, author, genre } = req.body;
-
-    if (!bookName && !author && !genre) {
+    if (id !== authorId) {
+      return customErrorHandler(
+        {
+          details: "This action is not allowed",
+          code: 403,
+        },
+        next
+      );
+    }
+    if (!bookName && !authorId && !genre && !published_date) {
       return res
         .status(400)
         .json({ message: "Please provide field to update", success: false });
@@ -173,7 +220,10 @@ const updateBook = async (req, res) => {
       bookClient.UpdateBook({ bookId, ...req.body }, (error, response) => {
         if (error) {
           console.log(error);
-          reject(new Error(error.details || "An unknown error occurred"));
+          reject({
+            details: error.details,
+            code: error.code,
+          });
         }
         resolve(response);
       });
@@ -185,10 +235,13 @@ const updateBook = async (req, res) => {
     });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({
-      message: error.message,
-      success: false,
-    });
+    return customErrorHandler(
+      {
+        details: error.details || error.message,
+        code: error.code,
+      },
+      next
+    );
   }
 };
 

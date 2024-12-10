@@ -21,7 +21,7 @@ message GetBookByAuthorResponse {
 }
 
 message GetBookByIdRequest {
-    int32 bookId = 1;
+    string bookId = 1;
 }
 message GetBookByIdResponse {
     Book book = 1;
@@ -36,16 +36,18 @@ message AddBookResponse {
     string message = 1;
 }
 message DeleteBookRequest {
-    int32 bookId = 1;
+    string bookId = 1;
+
 }
 message DeleteBookResponse {
     bool success = 1;
 }
 
 message UpdateBookRequest {
-    int32 bookId = 1;
-    optional string bookName = 2;
-    optional Genre genre = 3;
+    string bookId = 1;
+    string bookName = 2;
+    Genre genre = 3;
+    string published_date = 4;
 }
 
 message UpdateBookResponse {

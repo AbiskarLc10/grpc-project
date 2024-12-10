@@ -1,10 +1,10 @@
 const grpc = require("@grpc/grpc-js");
 const fs = require("fs/promises");
 const path = require("path");
-const Books = require("../dummydata/news.json");
+// const Books = require("../dummydata/news.json");
 const { Book } = require("../db/models/index");
 const sequelize = require("../db/connection");
-const filePath = path.resolve(__dirname, "../dummydata/news.json");
+// const filePath = path.resolve(__dirname, "../dummydata/news.json");
 
 class BookService {
   AddBook = async (call, callback) => {
@@ -69,7 +69,7 @@ class BookService {
 
   UpdateBook = async (call, callback) => {
     try {
-      const { bookId, bookName, genre, author } = call.request;
+      const { bookId, bookName, genre, published_date } = call.request;
 
       if (!bookId) {
         return callback({
@@ -81,30 +81,35 @@ class BookService {
       let newBookData = {};
       if (bookName) newBookData.bookName = bookName;
       if (genre) newBookData.genre = genre;
-      if (author) newBookData.author = author;
+      if (published_date) newBookData.published_date = published_date;
 
-      const file = await fs.readFile(filePath, "utf-8");
-      let fileData = JSON.parse(file);
-
-      let bookFound = false;
-      fileData = fileData.map((book) => {
-        if (book.bookId === bookId) {
-          bookFound = true;
-          return { ...book, ...newBookData };
-        }
-        return book;
+      const bookExists = await Book.findOne({
+        where: {
+          id: bookId,
+        },
       });
 
-      if (!bookFound) {
+      if (!bookExists) {
         return callback({
           details: "Book not found",
           code: grpc.status.NOT_FOUND,
         });
       }
 
-      await fs.writeFile(filePath, JSON.stringify(fileData, null, 2));
+      const updateBook = await Book.update(newBookData, {
+        where: {
+          id: bookId,
+        },
+      });
 
-      callback(null, { message: "Book updated successfully" });
+      if (updateBook[0] === 0) {
+        return callback({
+          details: "Failed to update the book",
+          code: grpc.status.UNKNOWN,
+        });
+      }
+
+      return callback(null, { message: "Book updated successfully" });
     } catch (error) {
       console.log(error);
       return callback({
@@ -125,11 +130,12 @@ class BookService {
           code: grpc.status.INVALID_ARGUMENT,
         });
       }
+      // const file = await fs.readFile(filePath, "utf-8");
+      // let fileData = JSON.parse(file);
 
-      const file = await fs.readFile(filePath, "utf-8");
-      let fileData = JSON.parse(file);
+      // const bookToBeDeleted = Books.find((book) => book.bookId === bookId);
 
-      const bookToBeDeleted = Books.find((book) => book.bookId === bookId);
+      const bookToBeDeleted = await Book.findByPk(bookId);
 
       if (!bookToBeDeleted) {
         return callback({
@@ -138,26 +144,47 @@ class BookService {
         });
       }
 
-      fileData = fileData.filter((book) => book.bookId !== bookId);
+      const deletedBook = await Book.destroy({
+        where: {
+          id: bookId,
+        },
+      });
 
-      await fs.writeFile(filePath, JSON.stringify(fileData));
+      if (!deletedBook) {
+        return callback({
+          details: "Something went wrong",
+          code: grpc.status.FAILED_PRECONDITION,
+        });
+      }
+
+      // fileData = fileData.filter((book) => book.bookId !== bookId);
+
+      // await fs.writeFile(filePath, JSON.stringify(fileData));
 
       return callback(null, { success: true });
     } catch (error) {
       return callback({
-        details: "Failed to add delete",
+        details: "Failed to  delete book",
         code: grpc.status.INTERNAL,
       });
     }
   };
 
-  GetAllBook = (call, callback) => {
+  GetAllBook = async (call, callback) => {
     try {
-      return callback(null, { books: Books });
+      const books = await Book.findAll();
+
+      if (books.length === 0) {
+        return callback({
+          details: "No books found",
+          code: grpc.status.NOT_FOUND,
+        });
+      }
+      return callback(null, { books: books });
     } catch (error) {
       console.log(error);
       return callback({
-        details: "Failed to get all users",
+        details: "Failed to get all books",
         code: grpc.status.INTERNAL,
       });
     }
@@ -179,7 +206,7 @@ class BookService {
 
       const foundBooks = await sequelize.query(
         `
-        SELECT b.id, b.bookName, b.genre 
+        SELECT b.id, b.bookName, b.genre, a.name
         FROM books b
         JOIN authors a ON b.authorId = a.id
         WHERE a.name LIKE :author`,
@@ -207,7 +234,7 @@ class BookService {
     }
   };
 
-  GetBookById = (call, callback) => {
+  GetBookById = async (call, callback) => {
     try {
       const { bookId } = call.request;
 
@@ -218,13 +245,11 @@ class BookService {
         });
       }
 
-      // const book = Books.find((book) => book.bookId === bookId);
-
-      
+      const book = await Book.findByPk(bookId);
 
       if (!book) {
         return callback({
-          details: "Book not found",
+          details: "Book does not exists",
           code: grpc.status.NOT_FOUND,
         });
       }

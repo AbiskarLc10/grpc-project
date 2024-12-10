@@ -13,8 +13,8 @@ const router = express.Router();
 router.route("/get-all-books").get(getAllBooks);
 router.route("/getbooks/:author").get(getbooksByAuthor);
 router.route("/add").post(verifyUser,addBook);
-router.route("/delete/:bookId").delete(verifyUser,deleteBookById);
-router.route("/update/:bookId").patch(verifyUser,updateBook);
+router.route("/delete/:bookId/:authorId").delete(verifyUser,deleteBookById);
+router.route("/update/:bookId/:authorId").patch(verifyUser,updateBook);
 router.route("/getbook/:bookId").get(getBookById);
 
 module.exports = router;

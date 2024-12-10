@@ -17,7 +17,7 @@ const verifyUser = async (req, res, next) => {
       if (err) {
         if (err.name === "TokenExpiredError") {
           return customErrorHandler(
-            { code: 401, details: "Token has expired" },
+            { code: 401, details: "Token has expired, Login Again!" },
             next
           );
         }
