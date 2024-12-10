@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start:dev":"nodemon ./index.js"
+    "start:dev": "nodemon ./index.js"
   },
   "keywords": [],
   "author": "",
@@ -13,6 +13,7 @@
   "dependencies": {
     "@grpc/grpc-js": "^1.12.3",
     "@grpc/proto-loader": "^0.7.13",
+    "cookie-parser": "^1.4.7",
     "dotenv": "^16.4.6",
     "express": "^4.21.1",
     "jsonwebtoken": "^9.0.2",
