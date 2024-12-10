@@ -20,9 +20,9 @@ message Author {
 }
 
 message Book {
-    int32 bookId = 1;
+    string id = 1;
     string bookName = 2;
     Genre genre = 3;
-    string author_id = 4;
+    string authorId = 4;
     string published_date = 5;
 }

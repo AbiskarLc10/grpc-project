@@ -1,3 +1,4 @@
+const customErrorHandler = require("../errors/customError");
 const bookClient = require("../grpc-client/booksclient");
 
 const getAllBooks = async (req, res) => {
@@ -77,22 +78,26 @@ const getBookById = async (req, res) => {
 
 const addBook = async (req, res) => {
   try {
-    const { id, bookName, genre, author } = req.body;
+    const { bookName, genre, published_date } = req.body;
+    const { id } = req.user;
 
-    if (!bookName || !genre || !author) {
+    if (!bookName || !genre || !published_date) {
       return res.status(400).json({
-        message: "Please provide book name, genre and author",
+        message: "Please provide book name, genre and published date",
         success: false,
       });
     }
 
     const response = await new Promise((resolve, reject) => {
       bookClient.AddBook(
-        { book: { id, bookName, genre, author } },
+        { book: { bookName, genre, authorId: id, published_date } },
         (error, response) => {
           if (error) {
             console.log(error);
-            reject(new Error(error.details || "An unknown error occurred"));
+            reject({
+              details: error.details,
+              code: error.code,
+            });
           }
 
           resolve(response);
@@ -103,7 +108,13 @@ const addBook = async (req, res) => {
     return res.status(200).json({ message: response.message, success: true });
   } catch (error) {
     console.log(error);
-    return res.status(500).json({ message: error.message, success: false });
+    return customErrorHandler(
+      {
+        details: error.details || error.message,
+        code: error.code,
+      },
+      next
+    );
   }
 };
 

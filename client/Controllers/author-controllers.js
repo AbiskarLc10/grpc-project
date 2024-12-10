@@ -66,7 +66,7 @@ const DeleteAuthor = async (req, res, next) => {
     if (!response.success) {
       throw new Error("An unknown error occurred");
     }
-    return res.clearCookie("token").status(200).json({
+    return res.status(200).json({
       message: "Author deleted successfully",
       success: response.success,
     });
@@ -97,7 +97,6 @@ const SignOutAuthor = async (req, res, next) => {
     }
 
     return res
-      .clearCookie("token")
       .status(200)
       .json({ message: "User sign out successful", success: true });
   } catch (error) {
@@ -111,4 +110,34 @@ const SignOutAuthor = async (req, res, next) => {
     );
   }
 };
-module.exports = { UpdateAuthor, DeleteAuthor, SignOutAuthor };
+
+const getAuthorById = async (req, res, next) => {
+  try {
+    const { authorId } = req.params;
+
+    const response = await new Promise((resolve, reject) => {
+      AuthorClient.GetAuthorById({ authorId }, (error, response) => {
+        if (error) {
+          console.log(error);
+          reject({
+            details: error.details,
+            code: error.code,
+          });
+        }
+        resolve(response);
+      });
+    });
+    
+    return res.status(201).json({message:"User Fetched Successfully",...response,success:true});
+  } catch (error) {
+    console.log(error);
+    return customErrorHandler(
+      {
+        code: error.code,
+        details: error.details || error.message,
+      },
+      next
+    );
+  }
+};
+module.exports = { UpdateAuthor, DeleteAuthor, SignOutAuthor, getAuthorById };

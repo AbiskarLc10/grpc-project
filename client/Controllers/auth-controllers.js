@@ -29,14 +29,6 @@ const SignUpAuthor = async (req, res, next) => {
 
 const SignInAuthor = async (req, res, next) => {
   try {
-    // const {token} = req.cookies
-
-    // if(token){
-    //   return customErrorHandler({
-    //     code:400,
-    //     message:"Author is already logged in"
-    //   },next)
-    // }
     const response = await new Promise((resolve, reject) => {
       AuthorClient.SignIn(req.body, (error, response) => {
         if (error) {
@@ -56,9 +48,8 @@ const SignInAuthor = async (req, res, next) => {
         { expiresIn: "1hr" }
       );
       return res
-        .cookie('token',token)
         .status(201)
-        .json({ message: "Sign In Successful", ...response });
+        .json({ message: "Sign In Successful", ...response ,token: token});
     }
   } catch (error) {
     return customErrorHandler(error, next);

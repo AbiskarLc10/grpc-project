@@ -27,7 +27,10 @@ message GetBookByIdResponse {
     Book book = 1;
 }
 message AddBookRequest {
-    Book book = 1;
+    string bookName = 1;
+    Genre genre = 2;
+    string authorId = 3;
+    string published_date = 4;
 }
 message AddBookResponse {
     string message = 1;

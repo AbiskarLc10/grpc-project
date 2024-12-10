@@ -2,11 +2,12 @@ const grpc = require("@grpc/grpc-js");
 const fs = require("fs/promises");
 const path = require("path");
 const Books = require("../dummydata/news.json");
+const { Book } = require("../db/models/index");
 const filePath = path.resolve(__dirname, "../dummydata/news.json");
 class BookService {
   AddBook = async (call, callback) => {
     try {
-      const { book } = call.request;
+      const { book, authorId } = call.request;
 
       if (!book) {
         return callback({
@@ -14,15 +15,32 @@ class BookService {
           code: grpc.status.INVALID_ARGUMENT,
         });
       }
-      const data = await fs.readFile(filePath, "utf-8");
 
-      let fileData = JSON.parse(data);
+      const newBook = await Book.create({
+        ...book,
+        authorId: authorId,
+      });
 
-      fileData = [...fileData, book];
+      if (!newBook) {
+        return callback({
+          details: "Failed to create book",
+          code: grpc.status.RESOURCE_EXHAUSTED,
+        });
+      }
 
-      await fs.writeFile(filePath, JSON.stringify(fileData), "utf-8");
+      return callback(null, {
+        message: "Book Added successfully",
+      });
 
-      return callback(null, { message: "Book Added successfully" });
+      // const data = await fs.readFile(filePath, "utf-8");
+
+      // let fileData = JSON.parse(data);
+
+      // fileData = [...fileData, book];
+
+      // await fs.writeFile(filePath, JSON.stringify(fileData), "utf-8");
+
+      // return callback(null, { message: "Book Added successfully" });
     } catch (error) {
       return callback({
         details: "Failed to add book",

@@ -19,11 +19,6 @@ class AuthorService {
         });
       }
 
-      // const checkAuthorExists = await Author.findOne({
-      //   where: {
-      //     email: email,
-      //   },
-      // });
       const checkAuthorExists = await sequelize.query(
         "SELECT * FROM authors where email = :email",
         {
@@ -99,8 +94,9 @@ class AuthorService {
           type: QueryTypes.SELECT,
         }
       );
-
-      if (!findAuthor) {
+      console.log("Hello");
+      console.log(findAuthor);
+      if (findAuthor.length === 0) {
         return callback({
           details: "User not found",
           code: grpc.status.NOT_FOUND,
@@ -186,6 +182,37 @@ class AuthorService {
     }
   };
 
+  GetAuthorById = async (call, callback) => {
+    try {
+      const { authorId } = call.request;
+
+      if (!authorId) {
+        return callback({
+          details: "Failed to get Id from user",
+          code: grpc.status.INVALID_ARGUMENT,
+        });
+      }
+
+      const authorData = await Author.findByPk(authorId);
+
+      if (!authorData) {
+        return callback({
+          details: "User does not exists",
+          code: grpc.status.NOT_FOUND,
+        });
+      }
+
+      return callback(null, {
+        author: authorData,
+      });
+    } catch (error) {
+      console.log(error);
+      return callback({
+        details: "Failed to get user data",
+        code: grpc.status.INTERNAL,
+      });
+    }
+  };
   DeleteProfile = async (call, callback) => {
     try {
       const { id } = call.request;
