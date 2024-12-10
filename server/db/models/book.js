@@ -28,6 +28,7 @@ module.exports = (sequelize, DataTypes) => {
       bookName: {
         type: DataTypes.STRING,
         allowNull: false,
+        unique: true
       },
       genre: {
         type: DataTypes.STRING,
@@ -37,7 +38,7 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.UUID,
         allowNull: false,
       },
-      publishedDate: { 
+      published_date: { 
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: new Date(),

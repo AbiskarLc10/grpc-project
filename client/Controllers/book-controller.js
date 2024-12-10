@@ -28,11 +28,24 @@ const getAllBooks = async (req, res) => {
 const getbooksByAuthor = async (req, res) => {
   try {
     const { author } = req.params;
+
+    if (!author) {
+      return customErrorHandler(
+        {
+          details: "Please provide author name",
+          code: 400,
+        },
+        next
+      );
+    }
     const response = await new Promise((resolve, reject) => {
       bookClient.GetBookByAuthor({ author }, (error, response) => {
         if (error) {
           console.log(error);
-          reject(new Error(error.details || "An unknown error occurred"));
+          reject({
+            details: error.details,
+            code: error.code
+          });
         } else {
           resolve(response);
         }
@@ -76,7 +89,7 @@ const getBookById = async (req, res) => {
   }
 };
 
-const addBook = async (req, res) => {
+const addBook = async (req, res, next) => {
   try {
     const { bookName, genre, published_date } = req.body;
     const { id } = req.user;
@@ -90,7 +103,7 @@ const addBook = async (req, res) => {
 
     const response = await new Promise((resolve, reject) => {
       bookClient.AddBook(
-        { book: { bookName, genre, authorId: id, published_date } },
+        { bookName, genre, authorId: id, published_date },
         (error, response) => {
           if (error) {
             console.log(error);
@@ -99,7 +112,6 @@ const addBook = async (req, res) => {
               code: error.code,
             });
           }
-
           resolve(response);
         }
       );

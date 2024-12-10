@@ -3,21 +3,38 @@ const fs = require("fs/promises");
 const path = require("path");
 const Books = require("../dummydata/news.json");
 const { Book } = require("../db/models/index");
+const sequelize = require("../db/connection");
 const filePath = path.resolve(__dirname, "../dummydata/news.json");
+
 class BookService {
   AddBook = async (call, callback) => {
     try {
-      const { book, authorId } = call.request;
+      const { bookName, published_date, genre, authorId } = call.request;
 
-      if (!book) {
+      if (!authorId || !bookName || !published_date || !genre) {
         return callback({
-          details: "Please provide book details",
+          details: "Please provide all book details",
           code: grpc.status.INVALID_ARGUMENT,
         });
       }
 
+      const checkUniqueBookName = await Book.findOne({
+        where: {
+          bookName: bookName,
+        },
+      });
+
+      if (checkUniqueBookName) {
+        return callback({
+          details: "Book with this name already exists",
+          code: grpc.status.ALREADY_EXISTS,
+        });
+      }
+
       const newBook = await Book.create({
-        ...book,
+        bookName,
+        genre,
+        published_date: new Date(published_date).toISOString(),
         authorId: authorId,
       });
 
@@ -42,6 +59,7 @@ class BookService {
 
       // return callback(null, { message: "Book Added successfully" });
     } catch (error) {
+      console.log(error);
       return callback({
         details: "Failed to add book",
         code: grpc.status.INTERNAL,
@@ -132,6 +150,7 @@ class BookService {
       });
     }
   };
+
   GetAllBook = (call, callback) => {
     try {
       return callback(null, { books: Books });
@@ -144,7 +163,7 @@ class BookService {
     }
   };
 
-  GetBookByAuthor = (call, callback) => {
+  GetBookByAuthor = async (call, callback) => {
     try {
       let { author } = call.request;
 
@@ -158,13 +177,22 @@ class BookService {
 
       author = author.replace(/\s/g, "").toLowerCase();
 
-      const foundBooks = Books.filter((book) => {
-        return book.author.replace(/\s/g, "").toLowerCase() === author;
-      });
+      const foundBooks = await sequelize.query(
+        `
+        SELECT b.id, b.bookName, b.genre 
+        FROM books b
+        JOIN authors a ON b.authorId = a.id
+        WHERE a.name LIKE :author`,
+        {
+          replacements: {
+            author: `%${author}%`,
+          },
+        }
+      );
 
       if (foundBooks.length === 0) {
         return callback({
-          details: "Book not found for the author",
+          details: "Book not found for the author name",
           code: grpc.status.NOT_FOUND,
         });
       }
@@ -190,7 +218,9 @@ class BookService {
         });
       }
 
-      const book = Books.find((book) => book.bookId === bookId);
+      // const book = Books.find((book) => book.bookId === bookId);
+
+      
 
       if (!book) {
         return callback({
