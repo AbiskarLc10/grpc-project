@@ -13,6 +13,8 @@ message SignUpRequest {
 }
 
 
+
+
 message SignUpResponse {
     Author author = 1;
     bool success = 2;

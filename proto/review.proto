@@ -1,0 +1,28 @@
+syntax = "proto3";
+
+
+package review;
+
+
+
+message BookReview{
+    string reviewerId = 1;
+    string bookId =2 ;
+    string description = 3;
+}
+
+
+message AddBookReviewRequest {
+    BookReview review = 1;
+}
+
+message AddBookReviewResponse {
+    string message = 1;
+    string bookName = 2;
+    string description = 3;
+}
+
+
+service ReviewService {
+    rpc AddBookReview(AddBookReviewRequest) returns (AddBookReviewResponse){};
+}

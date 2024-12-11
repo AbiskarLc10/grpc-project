@@ -19,6 +19,7 @@ message Author {
     optional string profileImage = 6;
 }
 
+
 message Book {
     string id = 1;
     string bookName = 2;
