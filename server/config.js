@@ -1,4 +1,5 @@
 const HOST_URL = "localhost:50051";
+const BOOK_HOST_URL = "localhost:50052";
 const BOOK_PROTO_PATH = "../proto/book.proto";
 const AUTHOR_PROTO_PATH = "../proto/author.proto";
 const PROTO_LOADER_OPTION = {
@@ -11,6 +12,7 @@ const PROTO_LOADER_OPTION = {
 
 module.exports = {
     HOST_URL,
+    BOOK_HOST_URL,
     BOOK_PROTO_PATH,
     PROTO_LOADER_OPTION,
     AUTHOR_PROTO_PATH

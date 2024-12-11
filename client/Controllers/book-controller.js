@@ -36,8 +36,9 @@ const getAllBooks = async (req, res, next) => {
 
 const getbooksByAuthor = async (req, res) => {
   try {
-    const { author } = req.params;
+    const { author } = req.query;
 
+    console.log(author);
     if (!author) {
       return customErrorHandler(
         {
@@ -61,9 +62,13 @@ const getbooksByAuthor = async (req, res) => {
       });
     });
 
+    const books = response.books.map((book, index) => {
+      const { author_info, ...rest } = book;
+      return rest;
+    });
     return res.status(201).json({
       message: "Successfully fetched author books",
-      books: response.books,
+      books: books,
       success: true,
     });
   } catch (error) {

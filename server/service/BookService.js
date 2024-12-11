@@ -206,7 +206,7 @@ class BookService {
 
       const foundBooks = await sequelize.query(
         `
-        SELECT b.id, b.bookName, b.genre, a.name
+        SELECT b.id, b.bookName, b.genre,b.published_date, b.authorId, a.name as authorName
         FROM books b
         JOIN authors a ON b.authorId = a.id
         WHERE a.name LIKE :author`,
@@ -224,7 +224,7 @@ class BookService {
         });
       }
 
-      return callback(null, { books: foundBooks });
+      return callback(null, { books: foundBooks[0] });
     } catch (error) {
       console.log(error);
       return callback({

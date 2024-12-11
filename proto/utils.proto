@@ -25,4 +25,8 @@ message Book {
     Genre genre = 3;
     string authorId = 4;
     string published_date = 5;
+    oneof author_info{
+
+        string authorName = 6;
+    }
 }

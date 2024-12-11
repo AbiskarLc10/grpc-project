@@ -11,7 +11,7 @@ const verifyUser = require("../middleware/verifyUser");
 const router = express.Router();
 
 router.route("/get-all-books").get(getAllBooks);
-router.route("/getbooks/:author").get(getbooksByAuthor);
+router.route("/getbooks").get(getbooksByAuthor);
 router.route("/add").post(verifyUser,addBook);
 router.route("/delete/:bookId/:authorId").delete(verifyUser,deleteBookById);
 router.route("/update/:bookId/:authorId").patch(verifyUser,updateBook);
