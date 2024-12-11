@@ -1,4 +1,5 @@
 const customErrorHandler = (error,next) => {
+  console.log(error.details)
   if (error.code && error.details) {
     return next({
       message: error.details || error.message,

@@ -1,5 +1,7 @@
 const customErrorHandler = require("../errors/customError");
 const bookClient = require("../grpc-client/booksclient");
+const validate = require("../utils/validateData");
+const { UpdateBookSchema } = require("../utils/validationSchema");
 
 const getAllBooks = async (req, res, next) => {
   try {
@@ -200,12 +202,13 @@ const deleteBookById = async (req, res, next) => {
   }
 };
 
-const updateBook = async (req, res) => {
+const updateBook = async (req, res,next) => {
   try {
     const { bookId, authorId } = req.params;
     const { id } = req.user;
     const { bookName, published_date, genre } = req.body;
 
+    
     if (id !== authorId) {
       return customErrorHandler(
         {
@@ -215,6 +218,8 @@ const updateBook = async (req, res) => {
         next
       );
     }
+    
+    validate(req.body,UpdateBookSchema);
     if (!bookName && !authorId && !genre && !published_date) {
       return res
         .status(400)
@@ -243,7 +248,7 @@ const updateBook = async (req, res) => {
     return customErrorHandler(
       {
         details: error.details || error.message,
-        code: error.code,
+        code: error.code || 500,
       },
       next
     );
