@@ -13,10 +13,10 @@ module.exports = (sequelize, DataTypes) => {
         foreignKey: "bookId",
         as: "book",
       });
-      Review.belongsTo(models.Author,{
-        foreignKey:"reviewerId",
-        as:"reviewer"
-      })
+      Review.belongsTo(models.Author, {
+        foreignKey: "reviewerId",
+        as: "reviewer",
+      });
     }
   }
   Review.init(
@@ -44,6 +44,7 @@ module.exports = (sequelize, DataTypes) => {
       sequelize,
       modelName: "Review",
       timestamps: true,
+      paranoid: true,
     }
   );
   return Review;
