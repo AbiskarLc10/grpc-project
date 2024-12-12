@@ -114,7 +114,13 @@ const SignOutAuthor = async (req, res, next) => {
 const getAuthorById = async (req, res, next) => {
   try {
     const { authorId } = req.params;
-
+    const {id} = req.user;
+    if(authorId!==id){
+      return customErrorHandler({
+        details:"Unauthorized Access, action not allowed",
+        code: 403
+      })
+    }
     const response = await new Promise((resolve, reject) => {
       AuthorClient.GetAuthorById({ authorId }, (error, response) => {
         if (error) {

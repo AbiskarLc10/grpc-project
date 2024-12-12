@@ -3,8 +3,14 @@ const jwt = require("jsonwebtoken");
 
 const verifyUser = async (req, res, next) => {
   try {
+
+    if(!req.headers.authorization){
+      return customErrorHandler({
+        details:"Token not found.Please login!",
+        code:404
+      }, next)
+    }
     const [_, token] = req.headers.authorization.split(" ");
-    // const { token } = req.cookies;
     console.log(token);
     if (!token) {
       return customErrorHandler(

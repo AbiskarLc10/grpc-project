@@ -1,10 +1,6 @@
 const grpc = require("@grpc/grpc-js");
-const fs = require("fs/promises");
-const path = require("path");
-// const Books = require("../dummydata/news.json");
 const { Book } = require("../db/models/index");
 const sequelize = require("../db/connection");
-// const filePath = path.resolve(__dirname, "../dummydata/news.json");
 
 class BookService {
   AddBook = async (call, callback) => {
@@ -48,16 +44,6 @@ class BookService {
       return callback(null, {
         message: "Book Added successfully",
       });
-
-      // const data = await fs.readFile(filePath, "utf-8");
-
-      // let fileData = JSON.parse(data);
-
-      // fileData = [...fileData, book];
-
-      // await fs.writeFile(filePath, JSON.stringify(fileData), "utf-8");
-
-      // return callback(null, { message: "Book Added successfully" });
     } catch (error) {
       console.log(error);
       return callback({
@@ -130,10 +116,6 @@ class BookService {
           code: grpc.status.INVALID_ARGUMENT,
         });
       }
-      // const file = await fs.readFile(filePath, "utf-8");
-      // let fileData = JSON.parse(file);
-
-      // const bookToBeDeleted = Books.find((book) => book.bookId === bookId);
 
       const bookToBeDeleted = await Book.findByPk(bookId);
 
@@ -157,9 +139,6 @@ class BookService {
         });
       }
 
-      // fileData = fileData.filter((book) => book.bookId !== bookId);
-
-      // await fs.writeFile(filePath, JSON.stringify(fileData));
 
       return callback(null, { success: true });
     } catch (error) {
