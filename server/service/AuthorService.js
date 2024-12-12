@@ -6,6 +6,7 @@ const { Author } = require("../db/models/index");
 const { v4: uuidv4 } = require("uuid");
 const sequelize = require("../db/connection");
 const { QueryTypes } = require("sequelize");
+const transporter = require("../transport/mailer");
 
 class AuthorService {
   SignUp = async (call, callback) => {
@@ -66,6 +67,17 @@ class AuthorService {
           code: grpc.status.FAILED_PRECONDITION,
         });
       }
+
+      // const code = Math.floor(1000000+Math.random()*9000000)
+      // const emailMessage = await  transporter.sendMail({
+      //   from: 'abiskar1234@out;l',
+      //   to: "lcabi116@gmail.com",
+      //   subject: "App verification code", 
+      //   text: "Hello world?",
+      //   html: `<b>Your verification code is ${code}</b>`, 
+      // })
+
+      // console.log(emailMessage);
 
       return callback(null, { success: true, author: newAuthor });
     } catch (error) {

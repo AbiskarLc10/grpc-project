@@ -22,7 +22,16 @@ message AddBookReviewResponse {
     string description = 3;
 }
 
+message DeleteBookReviewRequest{
+    string reviewId = 1;
+    string reviewerId = 2;
+    string bookId = 3;
+}
+message DeleteBookReviewResponse {
+    bool success = 1;
+}
 
 service ReviewService {
     rpc AddBookReview(AddBookReviewRequest) returns (AddBookReviewResponse){};
+    rpc DeleteBookReview(DeleteBookReviewRequest) returns (DeleteBookReviewResponse){};
 }
