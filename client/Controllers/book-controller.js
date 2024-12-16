@@ -1,7 +1,10 @@
 const customErrorHandler = require("../errors/customError");
 const bookClient = require("../grpc-client/booksclient");
 const validate = require("../utils/validateData");
-const { UpdateBookSchema } = require("../utils/validationSchema");
+const {
+  UpdateBookSchema,
+  dateTimeSchema,
+} = require("../utils/validationSchema");
 
 const getAllBooks = async (req, res, next) => {
   try {
@@ -202,13 +205,50 @@ const deleteBookById = async (req, res, next) => {
   }
 };
 
-const updateBook = async (req, res,next) => {
+const getBookByDate = async (req, res, next) => {
+  try {
+    let from = new Date(req.body.from);
+    let to = req.body.to || new Date();
+
+    validate({ from,to }, dateTimeSchema);
+
+    const response = await new Promise((resolve, reject) => {
+      bookClient.GetBookByDate({ from, to }, (error, response) => {
+        if (error) {
+          console.log(error);
+          reject({
+            details: error.details,
+            code: error.code,
+          });
+        }
+        resolve(response);
+      });
+    });
+
+    return res
+      .status(200)
+      .json({
+        ...response,
+        message: "Books fetched successfully",
+        success: true,
+      });
+  } catch (error) {
+    console.log(error);
+    return customErrorHandler(
+      {
+        details: error.details || error.message,
+        code: error.code || 500,
+      },
+      next
+    );
+  }
+};
+const updateBook = async (req, res, next) => {
   try {
     const { bookId, authorId } = req.params;
     const { id } = req.user;
     const { bookName, published_date, genre } = req.body;
 
-    
     if (id !== authorId) {
       return customErrorHandler(
         {
@@ -218,8 +258,8 @@ const updateBook = async (req, res,next) => {
         next
       );
     }
-    
-    validate(req.body,UpdateBookSchema);
+
+    validate({...req.body,genre: genre.toUpperCase()}, UpdateBookSchema);
     if (!bookName && !authorId && !genre && !published_date) {
       return res
         .status(400)
@@ -262,4 +302,5 @@ module.exports = {
   getbooksByAuthor,
   updateBook,
   getBookById,
+  getBookByDate,
 };

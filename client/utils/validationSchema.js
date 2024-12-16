@@ -50,7 +50,15 @@ const UpdateBookSchema = z.object({
   published_date: z.string().optional(),
 });
 
-const AddReviewSchema = z.object({
+const reviewSchema = z.object({
   description: z.string().min(10, "Description must be at least 10 characters"),
 });
-module.exports = { signUpSchema, UpdateBookSchema, AddReviewSchema };
+
+const dateTimeSchema = z.object({
+  to: z.date().optional(),
+  from: z.date()
+})
+
+
+
+module.exports = { signUpSchema, UpdateBookSchema, reviewSchema, dateTimeSchema };

@@ -31,7 +31,20 @@ message DeleteBookReviewResponse {
     bool success = 1;
 }
 
+message EditBookReviewRequest{
+    string reviewId = 1;
+    string reviewerId = 2;
+    string bookId = 3;
+    string description = 4;
+}
+
+message EditBookReviewResponse{
+    string message = 1;
+    bool success = 2;
+}
+
 service ReviewService {
     rpc AddBookReview(AddBookReviewRequest) returns (AddBookReviewResponse){};
     rpc DeleteBookReview(DeleteBookReviewRequest) returns (DeleteBookReviewResponse){};
+    rpc EditBookReview(EditBookReviewRequest) returns (EditBookReviewResponse) {};
 }

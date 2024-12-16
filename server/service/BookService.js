@@ -57,7 +57,8 @@ class BookService {
     try {
       const { bookId, bookName, genre, published_date } = call.request;
 
-      if (!bookId) {
+      
+     if (!bookId) {
         return callback({
           details: "Id not provided",
           code: grpc.status.INVALID_ARGUMENT,

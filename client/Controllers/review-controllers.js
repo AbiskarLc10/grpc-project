@@ -2,7 +2,7 @@ const customErrorHandler = require("../errors/customError");
 const ReviewClient = require("../grpc-client/bookreviewClient");
 const z = require("zod");
 const validate = require("../utils/validateData");
-const { AddReviewSchema } = require("../utils/validationSchema");
+const { reviewSchema } = require("../utils/validationSchema");
 
 const addBookReview = async (req, res, next) => {
   try {
@@ -10,7 +10,7 @@ const addBookReview = async (req, res, next) => {
     const { bookId } = req.params;
     const { description } = req.body;
 
-    validate({ description }, AddReviewSchema);
+    validate({ description }, reviewSchema);
 
     const response = await new Promise((resolve, reject) => {
       ReviewClient.AddBookReview(
@@ -72,12 +72,10 @@ const deleteReview = async (req, res, next) => {
     });
 
     if (response.success) {
-      return res
-        .status(200)
-        .json({
-          message: "Review deleted Successfully",
-          success: response.success,
-        });
+      return res.status(200).json({
+        message: "Review deleted Successfully",
+        success: response.success,
+      });
     }
   } catch (error) {
     console.log(error);
@@ -91,4 +89,37 @@ const deleteReview = async (req, res, next) => {
   }
 };
 
-module.exports = { addBookReview,deleteReview };
+const editBookReview = async (req, res, next) => {
+  try {
+    const { bookId, reviewId } = req.params;
+    const { id } = req.user;
+    const { description } = req.body;
+    validate({ description }, reviewSchema);
+
+    const response = await new Promise((resolve, reject) => {
+      ReviewClient.EditBookReview(
+        { bookId, reviewId, reviewerId: id, description },
+        (error, response) => {
+          if (error) {
+            console.log(error);
+            reject({
+              details: error.details,
+              code: error.code,
+            });
+          }
+          resolve(response);
+        }
+      );
+    });
+
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+    return customErrorHandler({
+      details: error.details || error.message,
+      code: error.code || 500,
+    },next);
+  }
+};
+
+module.exports = { addBookReview, deleteReview, editBookReview };

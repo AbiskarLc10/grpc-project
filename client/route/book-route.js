@@ -6,6 +6,7 @@ const {
   getBookById,
   getbooksByAuthor,
   updateBook,
+  getBookByDate,
 } = require("../Controllers/book-controller");
 const verifyUser = require("../middleware/verifyUser");
 const router = express.Router();
@@ -16,5 +17,6 @@ router.route("/add").post(verifyUser,addBook);
 router.route("/delete/:bookId/:authorId").delete(verifyUser,deleteBookById);
 router.route("/update/:bookId/:authorId").patch(verifyUser,updateBook);
 router.route("/getbook/:bookId").get(getBookById);
+router.route("/get-books-by-date").get(getBookByDate);
 
 module.exports = router;

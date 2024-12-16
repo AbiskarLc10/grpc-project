@@ -1,11 +1,11 @@
 const grpc = require("@grpc/grpc-js");
 const bcrypt = require("bcrypt");
-const { Author } = require("../db/models/index");
+const { Author, Book } = require("../db/models/index");
 // const { signUpSchema } = require("../../client/utils/validationSchema");
 // const validate = require("../../client/utils/validateData");
 const { v4: uuidv4 } = require("uuid");
 const sequelize = require("../db/connection");
-const { QueryTypes } = require("sequelize");
+const { QueryTypes, where, Sequelize } = require("sequelize");
 const transporter = require("../transport/mailer");
 
 class AuthorService {
@@ -72,9 +72,9 @@ class AuthorService {
       // const emailMessage = await  transporter.sendMail({
       //   from: 'abiskar1234@out;l',
       //   to: "lcabi116@gmail.com",
-      //   subject: "App verification code", 
+      //   subject: "App verification code",
       //   text: "Hello world?",
-      //   html: `<b>Your verification code is ${code}</b>`, 
+      //   html: `<b>Your verification code is ${code}</b>`,
       // })
 
       // console.log(emailMessage);
@@ -138,6 +138,9 @@ class AuthorService {
   };
 
   UpdateProfile = async (call, callback) => {
+    // const updateTransaction = await sequelize.transaction({
+    //   isolationLevel: Sequelize.Transaction.ISOLATION_READ_COMMITTED,
+    // });
     try {
       console.log(call.request);
       const { id, name, genre, date_of_birth } = call.request;
@@ -160,7 +163,10 @@ class AuthorService {
         });
       }
 
-      const author = await Author.findByPk(id);
+      const author = await Author.findByPk(id, {
+        transaction: updateTransaction,
+        paranoid: false,
+      });
       if (!author) {
         return callback({
           details: "User does not exist.",
@@ -172,6 +178,7 @@ class AuthorService {
         where: {
           id: id,
         },
+        transaction: updateTransaction
       });
 
       if (affectedCount !== 1) {
@@ -181,11 +188,35 @@ class AuthorService {
         });
       }
 
+      // await Author.update(dataToUpdate, {
+      //   where: {
+      //     id: id,
+      //   },
+      //   transaction: updateTransaction,
+      // });
+
+      // if (dataToUpdate.genre) {
+      //   await Book.update(
+      //     {
+      //       genre: genre,
+      //     },
+      //     {
+      //       where: {
+      //         authorId: id,
+      //       },
+      //       transaction: updateTransaction,
+      //     }
+      //   );
+      // }
+
+      // await updateTransaction.commit();
+
       return callback(null, {
         message: "Updated user successfully",
         success: true,
       });
     } catch (error) {
+      // await updateTransaction.rollback();
       console.error("Error in UpdateProfile:", error);
       return callback({
         details: "Failed to update user",

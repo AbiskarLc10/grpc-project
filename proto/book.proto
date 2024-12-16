@@ -53,6 +53,14 @@ message UpdateBookRequest {
 message UpdateBookResponse {
     string message = 1;
 }
+message GetBookByDateRequest{
+    string from = 1;
+    string to = 2;
+}
+
+message GetBookByDateResponse{
+    repeated Book books = 1;
+}
 
 service BookService {
     rpc AddBook (AddBookRequest) returns (AddBookResponse){};
@@ -61,4 +69,5 @@ service BookService {
     rpc GetBookByAuthor (GetBookByAuthorRequest) returns (GetBookByAuthorResponse){};
     rpc GetBookById (GetBookByIdRequest) returns (GetBookByIdResponse){};
     rpc UpdateBook (UpdateBookRequest) returns (UpdateBookResponse) {};
-}
+    rpc GetBookByDate (GetBookByDateRequest) returns (GetBookByDateResponse){};
+} 
