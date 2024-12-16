@@ -1,6 +1,7 @@
 const grpc = require("@grpc/grpc-js");
 const { Book } = require("../db/models/index");
 const sequelize = require("../db/connection");
+const AuthorClient = require("../grpc-client/author");
 
 class BookService {
   AddBook = async (call, callback) => {
@@ -14,6 +15,14 @@ class BookService {
         });
       }
 
+      // const authorData = await new Promise((resolve, reject) => {
+      //   AuthorClient.GetAuthorById({ authorId }, (error, response) => {
+      //     if (response) {
+      //       resolve(response);
+      //     }
+      //   });
+      // });
+      // console.log(authorData);
       const checkUniqueBookName = await Book.findOne({
         where: {
           bookName: bookName,
@@ -57,8 +66,7 @@ class BookService {
     try {
       const { bookId, bookName, genre, published_date } = call.request;
 
-      
-     if (!bookId) {
+      if (!bookId) {
         return callback({
           details: "Id not provided",
           code: grpc.status.INVALID_ARGUMENT,
@@ -140,7 +148,6 @@ class BookService {
         });
       }
 
-
       return callback(null, { success: true });
     } catch (error) {
       return callback({
@@ -197,7 +204,7 @@ class BookService {
         }
       );
 
-      if (foundBooks.length === 0) {
+      if (foundBooks[0].length === 0) {
         return callback({
           details: "Book not found for the author name",
           code: grpc.status.NOT_FOUND,
@@ -225,16 +232,21 @@ class BookService {
         });
       }
 
-      const book = await Book.findByPk(bookId);
-
-      if (!book) {
+      // const book = await Book.findByPk(bookId);
+      const book = await sequelize.query("CALL GetBookById(:bookId)", {
+        replacements: {
+          bookId: bookId,
+        },
+      });
+      console.log(book);
+      if (book.length === 0) {
         return callback({
           details: "Book does not exists",
           code: grpc.status.NOT_FOUND,
         });
       }
 
-      return callback(null, { book });
+      return callback(null, { book: book[0] });
     } catch (error) {
       console.log(error);
       return callback({
@@ -244,39 +256,37 @@ class BookService {
     }
   };
 
-  GetBookByDate = async (call,callback) =>{
+  GetBookByDate = async (call, callback) => {
     try {
-
-      const {to,from} = call.request;
+      const { to, from } = call.request;
       const fromDate = new Date(from);
       const toDate = new Date(to);
 
       const books = await sequelize.query(
-        "SELECT * FROM books WHERE createdAt > ? AND createdAt < ? ORDER BY createdAt DESC", 
+        "SELECT * FROM books WHERE createdAt > ? AND createdAt < ? ORDER BY createdAt DESC",
         {
-          replacements: [fromDate, toDate], 
-          type: sequelize.QueryTypes.SELECT
+          replacements: [fromDate, toDate],
+          type: sequelize.QueryTypes.SELECT,
         }
       );
 
-      if(books.length===0){
+      if (books.length === 0) {
         return callback({
-          details:`Books not found between date ${from} and ${to}`,
-          code: grpc.status.NOT_FOUND
-        })
+          details: `Books not found between date ${from} and ${to}`,
+          code: grpc.status.NOT_FOUND,
+        });
       }
-      
+
       console.log(books);
-      return callback(null,{books: books})
-      
+      return callback(null, { books: books });
     } catch (error) {
       console.log(error);
       return callback({
-        details:"Failed to get books",
-        code: grpc.status.INTERNAL
-      })
+        details: "Failed to get books",
+        code: grpc.status.INTERNAL,
+      });
     }
-  }
+  };
 }
 
 module.exports = BookService;

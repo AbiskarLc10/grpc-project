@@ -229,6 +229,7 @@ class AuthorService {
     try {
       const { authorId } = call.request;
 
+      console.log(authorId)
       if (!authorId) {
         return callback({
           details: "Failed to get Id from user",

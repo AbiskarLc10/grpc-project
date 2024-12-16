@@ -39,7 +39,7 @@ const getAllBooks = async (req, res, next) => {
   }
 };
 
-const getbooksByAuthor = async (req, res) => {
+const getbooksByAuthor = async (req, res,next) => {
   try {
     const { author } = req.query;
 
@@ -88,7 +88,7 @@ const getbooksByAuthor = async (req, res) => {
   }
 };
 
-const getBookById = async (req, res) => {
+const getBookById = async (req, res,next) => {
   try {
     const { bookId } = req.params;
 
