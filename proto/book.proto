@@ -61,7 +61,12 @@ message GetBookByDateRequest{
 message GetBookByDateResponse{
     repeated Book books = 1;
 }
-
+message GetBooksPerPageRequest {
+    int32 pageNo = 1;
+}
+message GetBooksPerPageResponse {
+    repeated Book books = 1;
+}
 service BookService {
     rpc AddBook (AddBookRequest) returns (AddBookResponse){};
     rpc DeleteBook (DeleteBookRequest) returns (DeleteBookResponse) {};
@@ -70,4 +75,5 @@ service BookService {
     rpc GetBookById (GetBookByIdRequest) returns (GetBookByIdResponse){};
     rpc UpdateBook (UpdateBookRequest) returns (UpdateBookResponse) {};
     rpc GetBookByDate (GetBookByDateRequest) returns (GetBookByDateResponse){};
+    rpc GetBooksPerPage (GetBooksPerPageRequest) returns (GetBooksPerPageResponse){};
 } 

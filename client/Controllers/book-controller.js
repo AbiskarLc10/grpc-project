@@ -39,7 +39,7 @@ const getAllBooks = async (req, res, next) => {
   }
 };
 
-const getbooksByAuthor = async (req, res,next) => {
+const getbooksByAuthor = async (req, res, next) => {
   try {
     const { author } = req.query;
 
@@ -88,7 +88,7 @@ const getbooksByAuthor = async (req, res,next) => {
   }
 };
 
-const getBookById = async (req, res,next) => {
+const getBookById = async (req, res, next) => {
   try {
     const { bookId } = req.params;
 
@@ -210,7 +210,7 @@ const getBookByDate = async (req, res, next) => {
     let from = new Date(req.body.from);
     let to = req.body.to || new Date();
 
-    validate({ from,to }, dateTimeSchema);
+    validate({ from, to }, dateTimeSchema);
 
     const response = await new Promise((resolve, reject) => {
       bookClient.GetBookByDate({ from, to }, (error, response) => {
@@ -225,13 +225,11 @@ const getBookByDate = async (req, res, next) => {
       });
     });
 
-    return res
-      .status(200)
-      .json({
-        ...response,
-        message: "Books fetched successfully",
-        success: true,
-      });
+    return res.status(200).json({
+      ...response,
+      message: "Books fetched successfully",
+      success: true,
+    });
   } catch (error) {
     console.log(error);
     return customErrorHandler(
@@ -259,7 +257,7 @@ const updateBook = async (req, res, next) => {
       );
     }
 
-    validate({...req.body,genre: genre.toUpperCase()}, UpdateBookSchema);
+    validate({ ...req.body, genre: genre.toUpperCase() }, UpdateBookSchema);
     if (!bookName && !authorId && !genre && !published_date) {
       return res
         .status(400)
@@ -295,6 +293,46 @@ const updateBook = async (req, res, next) => {
   }
 };
 
+const getBooksByPage = async (req, res, next) => {
+  try {
+    const { pageNo } = req.params;
+
+    if (!pageNo) {
+      return customErrorHandler({
+        details: "Page no not provided",
+        code: 400,
+      },next);
+    }
+
+    const response = await new Promise((resolve, reject) => {
+      bookClient.GetBooksPerPage({ pageNo: pageNo }, (error, response) => {
+        if (error) {
+          console.log(error);
+          reject({
+            details: error.details,
+            code: error.code,
+          });
+        }
+        resolve(response);
+      });
+    });
+
+    return res
+      .status(201)
+      .json({
+        ...response,
+        success: true,
+        message: "Books fetched successfully",
+      });
+  } catch (error) {
+    console.log(error);
+    return customErrorHandler({
+      details: error.details,
+      code: error.code,
+    },next);
+  }
+};
+
 module.exports = {
   getAllBooks,
   addBook,
@@ -303,4 +341,5 @@ module.exports = {
   updateBook,
   getBookById,
   getBookByDate,
+  getBooksByPage
 };

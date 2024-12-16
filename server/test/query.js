@@ -40,7 +40,7 @@
 //       console.error("Error inserting data into authors table:", error.message);
 //     }
 //   };
-  
+
 // ( async ()=>{
 // InsertSetQuery({
 //     id: uuidv4(),
@@ -52,19 +52,65 @@
 //   }) })()
 // // getData(2,2);
 
-
 class UserData {
-
   static USER1 = new UserData("Abiskar");
 
-  constructor(name){
+  constructor(name) {
     this.name = name;
-
   }
 
-  toString(){
+  toString() {
     return `UserData.${this.name}`;
   }
 }
 
 console.log(UserData.USER1);
+
+class ValidationErrorCodes {
+  static REQUIRED_FIELD = new ValidationErrorCodes("REQUIRED_FIELD");
+  static INVALID_TYPE = new ValidationErrorCodes("INVALID_TYPE");
+
+  constructor(name) {
+    this.name = name;
+  }
+
+  toString() {
+    return `ValidationError.${this.name}`;
+  }
+}
+
+class ValidationError extends Error {
+  constructor(code, details = "") {
+    super();
+    this.code = code;
+    this.details = details;
+
+    switch (code) {
+      case ValidationErrorCodes.REQUIRED_FIELD:
+        this.message = `Missing required field: ${details}`;
+        break;
+      case ValidationErrorCodes.INVALID_TYPE:
+        this.message = `Invalid type for field: ${details}`;
+        break;
+      default:
+        this.message = "Unknown validation error";
+        break;
+    }
+  }
+}
+
+
+const testFunc = async () => {
+  try {
+    throw new DatabaseError(DatabaseErrorCodes.INSERT);
+  } catch (error) {
+    if (error instanceof DatabaseError) {
+      console.log(error.message);
+    }
+  }
+};
+
+testFunc();
+
+
+
