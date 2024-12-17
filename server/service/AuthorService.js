@@ -1,9 +1,6 @@
 const grpc = require("@grpc/grpc-js");
 const bcrypt = require("bcrypt");
 const { Author, Book } = require("../db/models/index");
-// const { signUpSchema } = require("../../client/utils/validationSchema");
-// const validate = require("../../client/utils/validateData");
-const { v4: uuidv4 } = require("uuid");
 const sequelize = require("../db/connection");
 const { QueryTypes, where, Sequelize } = require("sequelize");
 const transporter = require("../transport/mailer");
@@ -45,21 +42,7 @@ class AuthorService {
         date_of_birth: new Date(date_of_birth).toISOString(),
       });
 
-      // const newAuthor = await sequelize.query(
-      //   "INSERT INTO authors (id,name, email, password, genre, date_of_birth,createdAt,updatedAt) VALUES (:id,:name, :email, :password, :genre, :dob,:createdAt,:updatedAt)",
-      //   {
-      //     type: QueryTypes.INSERT,
-      //     mapToModel: Author,
-      //     replacements: {
-      //       ...call.request,
-      //       id: uuidv4(),
-      //       password: hashedPassword,
-      //       dob: new Date(date_of_birth).toISOString(),
-      //       createdAt: new Date(),
-      //       updatedAt: new Date()
-      //     },
-      //   }
-      // );
+ 
 
       if (!newAuthor) {
         return callback({
@@ -138,9 +121,9 @@ class AuthorService {
   };
 
   UpdateProfile = async (call, callback) => {
-    // const updateTransaction = await sequelize.transaction({
-    //   isolationLevel: Sequelize.Transaction.ISOLATION_READ_COMMITTED,
-    // });
+    const updateTransaction = await sequelize.transaction({
+      isolationLevel: Sequelize.Transaction.ISOLATION_READ_COMMITTED,
+    });
     try {
       console.log(call.request);
       const { id, name, genre, date_of_birth } = call.request;
@@ -209,14 +192,14 @@ class AuthorService {
       //   );
       // }
 
-      // await updateTransaction.commit();
+      await updateTransaction.commit();
 
       return callback(null, {
         message: "Updated user successfully",
         success: true,
       });
     } catch (error) {
-      // await updateTransaction.rollback();
+      await updateTransaction.rollback();
       console.error("Error in UpdateProfile:", error);
       return callback({
         details: "Failed to update user",
