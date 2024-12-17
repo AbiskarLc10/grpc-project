@@ -52,13 +52,20 @@ const UpdateBookSchema = z.object({
 
 const reviewSchema = z.object({
   description: z.string().min(10, "Description must be at least 10 characters"),
+  ratings: z.enum(
+    ["EXTREMLY_BAD", "POOR", "AVERAGE", "GOOD", "EXCELLENT"],
+    "Invalid ratings provided"
+  ).optional(),
 });
 
 const dateTimeSchema = z.object({
   to: z.date().optional(),
-  from: z.date()
-})
+  from: z.date(),
+});
 
-
-
-module.exports = { signUpSchema, UpdateBookSchema, reviewSchema, dateTimeSchema };
+module.exports = {
+  signUpSchema,
+  UpdateBookSchema,
+  reviewSchema,
+  dateTimeSchema,
+};

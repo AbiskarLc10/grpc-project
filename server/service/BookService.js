@@ -322,7 +322,13 @@ class BookService {
         },
       });
 
-      console.log(books);
+      if (books.length === 0) {
+        return callback({
+          details: `No books found for page no ${pageNo}`,
+          code: grpc.status.NOT_FOUND,
+        });
+      }
+      
       return callback(null, {
         books: books,
       });

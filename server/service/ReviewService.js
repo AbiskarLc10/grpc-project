@@ -4,7 +4,7 @@ const sequelize = require("../db/connection.js");
 class ReviewService {
   AddBookReview = async (call, callback) => {
     try {
-      const { reviewerId, bookId, description } = call.request.review;
+      const { reviewerId, bookId, description, ratings } = call.request.review;
 
       if (!reviewerId || !bookId || !description) {
         return callback({
@@ -30,6 +30,7 @@ class ReviewService {
         reviewerId: reviewerId,
         bookId: bookId,
         description: description,
+        ratings: ratings,
       });
 
       console.log(newBookReview);
@@ -107,7 +108,8 @@ class ReviewService {
 
   EditBookReview = async (call, callback) => {
     try {
-      const { reviewerId, bookId, reviewId,description } = call.request;
+      const { reviewerId, bookId, reviewId, description, ratings } =
+        call.request;
 
       if (!reviewerId || !bookId || !reviewId) {
         return callback({
@@ -116,29 +118,39 @@ class ReviewService {
         });
       }
 
-      const [findBook,_] = await sequelize.query(
+      const [findBook, _] = await sequelize.query(
         "SELECT * FROM books WHERE id= ?",
         {
           replacements: [bookId],
-          raw: true
+          raw: true,
         }
       );
 
-      if(findBook.length!==1){
+      if (findBook.length !== 1) {
         return callback({
-          details:"Book not found",
-          code: grpc.status.NOT_FOUND
-        })
+          details: "Book not found",
+          code: grpc.status.NOT_FOUND,
+        });
       }
 
-      const [__,updateBookResult] = await sequelize.query(
-        "UPDATE reviews SET description = :description, updatedAt = NOW() WHERE id = :reviewId AND reviewerId = :reviewerId AND bookId = :bookId",
+      if (!description || !ratings) {
+        return callback({
+          details: "None of the data to update",
+          code: grpc.status.INVALID_ARGUMENT,
+        });
+      }
+
+      const [__, updateBookResult] = await sequelize.query(
+        `UPDATE reviews SET ${
+          call.request.description ? "description = :description" : ""
+        }${
+          call.request.ratings ? "ratings= :ratings" : ""
+        }, updatedAt = NOW() WHERE id = :reviewId AND reviewerId = :reviewerId AND bookId = :bookId`,
         {
           replacements: call.request,
-          type: sequelize.QueryTypes.UPDATE
+          type: sequelize.QueryTypes.UPDATE,
         }
       );
-      
 
       console.log(updateBookResult);
 
@@ -150,6 +162,41 @@ class ReviewService {
       console.log(error);
       return callback({
         details: "Failed to edit book review",
+        code: grpc.status.INTERNAL,
+      });
+    }
+  };
+
+  GetAllReviews = async (call, callback) => {
+    try {
+      const { bookId } = call.request;
+
+      if (!bookId) {
+        return callback({
+          details: "Insufficient data to fetch review",
+          code: grpc.status.INVALID_ARGUMENT,
+        });
+      }
+
+      const bookReviews = await sequelize.query(
+        "SELECT r.id, r.reviewerId, b.bookName, r.ratings,r.description, r.bookId FROM reviews r JOIN books b ON r.bookId = b.id WHERE b.id = :bookId",
+        {
+          replacements: {
+            bookId: bookId,
+          },
+          type: sequelize.QueryTypes.SELECT,
+        }
+      );
+
+      console.log(bookReviews);
+
+      return callback(null, {
+        reviews: bookReviews,
+      });
+    } catch (error) {
+      console.log(error);
+      return callback({
+        details: "Failed to get book reviews",
         code: grpc.status.INTERNAL,
       });
     }

@@ -8,9 +8,9 @@ const addBookReview = async (req, res, next) => {
   try {
     const { id } = req.user;
     const { bookId } = req.params;
-    const { description } = req.body;
+    const { description, ratings } = req.body;
 
-    validate({ description }, reviewSchema);
+    validate({ description, ratings }, reviewSchema);
 
     const response = await new Promise((resolve, reject) => {
       ReviewClient.AddBookReview(
@@ -115,11 +115,49 @@ const editBookReview = async (req, res, next) => {
     return res.status(200).json(response);
   } catch (error) {
     console.log(error);
-    return customErrorHandler({
-      details: error.details || error.message,
-      code: error.code || 500,
-    },next);
+    return customErrorHandler(
+      {
+        details: error.details || error.message,
+        code: error.code || 500,
+      },
+      next
+    );
   }
 };
 
-module.exports = { addBookReview, deleteReview, editBookReview };
+const getBookReviewsById = async (req, res, next) => {
+  try {
+    const { bookId } = req.params;
+
+    const response = await new Promise((resolve, reject) => {
+      ReviewClient.GetAllReviews({ bookId }, (error, response) => {
+        if (error) {
+          console.log(error);
+          reject({
+            details: error.details,
+            code: error.code,
+          });
+        }
+
+        resolve(response);
+      });
+    });
+
+    console.log(response);
+    return res
+      .status(201)
+      .json({
+        ...response,
+        message: "Book reviews fetched successfully",
+        success: true,
+      });
+  } catch (error) {
+    console.log(error);
+    return customErrorHandler({
+      details: error.details || error.message,
+      code: error.code,
+    });
+  }
+};
+
+module.exports = { addBookReview, deleteReview, editBookReview, getBookReviewsById };

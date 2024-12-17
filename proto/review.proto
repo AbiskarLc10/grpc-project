@@ -4,11 +4,20 @@ syntax = "proto3";
 package review;
 
 
+enum Rating {
+    EXTREMLY_BAD = 1;
+    POOR = 2;
+    AVERAGE = 3;
+    GOOD = 4;
+    EXCELLENT = 5;
+}
 
 message BookReview{
     string reviewerId = 1;
     string bookId =2 ;
     string description = 3;
+    Rating ratings = 4;
+    string bookName = 5;
 }
 
 
@@ -20,6 +29,7 @@ message AddBookReviewResponse {
     string message = 1;
     string bookName = 2;
     string description = 3;
+    Rating ratings = 4;
 }
 
 message DeleteBookReviewRequest{
@@ -36,6 +46,7 @@ message EditBookReviewRequest{
     string reviewerId = 2;
     string bookId = 3;
     string description = 4;
+    Rating ratings = 5;
 }
 
 message EditBookReviewResponse{
@@ -43,8 +54,18 @@ message EditBookReviewResponse{
     bool success = 2;
 }
 
+message GetAllReviewsRequest {
+    string bookId = 1;
+}
+
+
+message GetAllReviewsResponse {
+    repeated BookReview reviews = 1;
+}
+
 service ReviewService {
     rpc AddBookReview(AddBookReviewRequest) returns (AddBookReviewResponse){};
     rpc DeleteBookReview(DeleteBookReviewRequest) returns (DeleteBookReviewResponse){};
     rpc EditBookReview(EditBookReviewRequest) returns (EditBookReviewResponse) {};
+    rpc GetAllReviews(GetAllReviewsRequest) returns (GetAllReviewsResponse) {};
 }
