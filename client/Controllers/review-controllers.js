@@ -14,7 +14,7 @@ const addBookReview = async (req, res, next) => {
 
     const response = await new Promise((resolve, reject) => {
       ReviewClient.AddBookReview(
-        { review: { bookId: bookId, reviewerId: id, description } },
+        { review: { bookId: bookId, reviewerId: id, description,ratings } },
         (error, response) => {
           if (error) {
             console.log(error);

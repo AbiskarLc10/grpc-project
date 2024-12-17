@@ -45,6 +45,7 @@ class ReviewService {
         message: "Added Review Successfully",
         bookName: checkBookExists.bookName,
         description: description,
+        ratings: ratings
       });
     } catch (error) {
       console.log(error);

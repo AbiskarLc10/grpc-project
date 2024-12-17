@@ -39,6 +39,17 @@ module.exports = (sequelize, DataTypes) => {
         type: DataTypes.STRING,
         allowNull: false,
       },
+      ratings: {
+        type: DataTypes.ENUM([
+          "EXTREMLY_BAD",
+          "POOR",
+          "AVERAGE",
+          "GOOD",
+          "EXCELLENT",
+        ]),
+        allowNull: false,
+        defaultValue: "AVERAGE",
+      },
     },
     {
       sequelize,
