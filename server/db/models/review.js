@@ -40,15 +40,9 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       ratings: {
-        type: DataTypes.ENUM([
-          "EXTREMLY_BAD",
-          "POOR",
-          "AVERAGE",
-          "GOOD",
-          "EXCELLENT",
-        ]),
+        type: DataTypes.FLOAT,
         allowNull: false,
-        defaultValue: "AVERAGE",
+        defaultValue: 3,
       },
     },
     {

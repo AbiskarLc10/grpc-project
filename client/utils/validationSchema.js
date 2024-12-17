@@ -53,10 +53,7 @@ const UpdateBookSchema = z.object({
 
 const reviewSchema = z.object({
   description: z.string().min(10, "Description must be at least 10 characters"),
-  ratings: z.enum(
-    ["EXTREMLY_BAD", "POOR", "AVERAGE", "GOOD", "EXCELLENT"],
-    "Invalid ratings provided"
-  ).optional(),
+  ratings: z.number("Please enter the ratings between 1 to 5").min(1,"Rating cannot be less than 1").max(5,"Max rating is 5").optional(),
 });
 
 const dateTimeSchema = z.object({

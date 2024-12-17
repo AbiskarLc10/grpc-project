@@ -3,12 +3,20 @@ const { Review, Book } = require("../db/models/index.js");
 const sequelize = require("../db/connection.js");
 class ReviewService {
   AddBookReview = async (call, callback) => {
+    const transaction = await sequelize.transaction();
     try {
       const { reviewerId, bookId, description, ratings } = call.request.review;
 
-      if (!reviewerId || !bookId || !description) {
+      if (!reviewerId || !bookId || !description || !ratings) {
         return callback({
           details: "Argument missing",
+          code: grpc.status.INVALID_ARGUMENT,
+        });
+      }
+
+      if (ratings < 1 || ratings > 5) {
+        return callback({
+          details: "Ratings must be between 1 and 5",
           code: grpc.status.INVALID_ARGUMENT,
         });
       }
@@ -21,19 +29,23 @@ class ReviewService {
 
       if (!checkBookExists) {
         return callback({
-          details: "Book does not exists",
+          details: "Book does not exist",
           code: grpc.status.NOT_FOUND,
         });
       }
 
-      const newBookReview = await Review.create({
-        reviewerId: reviewerId,
-        bookId: bookId,
-        description: description,
-        ratings: ratings,
-      });
+      const newBookReview = await Review.create(
+        {
+          reviewerId: reviewerId,
+          bookId: bookId,
+          description: description,
+          ratings: ratings,
+        },
+        {
+          transaction: transaction,
+        }
+      );
 
-      console.log(newBookReview);
       if (!newBookReview) {
         return callback({
           details: "Something went wrong",
@@ -41,14 +53,32 @@ class ReviewService {
         });
       }
 
+      await sequelize.query(
+        `UPDATE books
+        SET average_ratings = (
+          SELECT AVG(ratings) 
+          FROM reviews 
+          WHERE bookId = :bookId
+        )
+        WHERE id = :bookId`,
+        {
+          replacements: { bookId: bookId },
+          transaction: transaction,
+          type: sequelize.QueryTypes.UPDATE,
+        }
+      );
+
+      await transaction.commit();
+
       return callback(null, {
-        message: "Added Review Successfully",
+        message: "Added review successfully",
         bookName: checkBookExists.bookName,
         description: description,
-        ratings: ratings
+        ratings: ratings,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
+      await transaction.rollback();
       return callback({
         details: "Failed to add review to the book",
         code: grpc.status.INTERNAL,
@@ -179,15 +209,36 @@ class ReviewService {
         });
       }
 
-      const bookReviews = await sequelize.query(
-        "SELECT r.id, r.reviewerId, b.bookName, r.ratings,r.description, r.bookId FROM reviews r JOIN books b ON r.bookId = b.id WHERE b.id = :bookId",
-        {
-          replacements: {
-            bookId: bookId,
+      // const bookReviews = await sequelize.query(
+      //   "SELECT r.id, r.reviewerId, b.bookName, r.ratings,r.description, r.bookId FROM reviews r JOIN books b ON r.bookId = b.id WHERE b.id = :bookId",
+      //   {
+      //     replacements: {
+      //       bookId: bookId,
+      //     },
+      //     type: sequelize.QueryTypes.SELECT,
+      //   }
+      // );
+
+      // const bookReviews = await sequelize.query(
+      //   "CALL GetAllBookReviews(:bookId)",
+      //   {
+      //     replacements: {
+      //       bookId: bookId,
+      //     },
+      //   }
+      // );
+      const bookReviews = await Review.findAll({
+        where: {
+          bookId: bookId,
+        },
+        include: [
+          {
+            model: Book,
+            attributes: ["bookName"],
+            as: "book",
           },
-          type: sequelize.QueryTypes.SELECT,
-        }
-      );
+        ],
+      });
 
       console.log(bookReviews);
 

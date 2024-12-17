@@ -11,16 +11,16 @@ module.exports = {
      */
 
     await queryInterface.addColumn("Reviews", "ratings", {
-      type: Sequelize.ENUM([
-        "EXTREMLY_BAD",
-        "POOR",
-        "AVERAGE",
-        "GOOD",
-        "EXCELLENT",
-      ]),
+      type: Sequelize.FLOAT,
       allowNull: false,
-      defaultValue: "AVERAGE"
+      defaultValue: 3
     });
+
+    await queryInterface.addColumn("Books","average_ratings",{
+      type: Sequelize.FLOAT,
+      allowNull: false,
+      defaultValue: 3.5
+    })
   },
 
   async down(queryInterface, Sequelize) {
@@ -32,5 +32,6 @@ module.exports = {
      */
 
     await queryInterface.removeColumn("Reviews","ratings");
+    await queryInterface.removeColumn("Books","average_ratings");
   },
 };

@@ -2,7 +2,7 @@ const grpc = require("@grpc/grpc-js");
 const bcrypt = require("bcrypt");
 const { Author, Book } = require("../db/models/index");
 const sequelize = require("../db/connection");
-const { QueryTypes, where, Sequelize } = require("sequelize");
+const { QueryTypes,  Sequelize } = require("sequelize");
 const transporter = require("../transport/mailer");
 
 class AuthorService {

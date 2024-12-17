@@ -4,19 +4,19 @@ syntax = "proto3";
 package review;
 
 
-enum Rating {
-    EXTREMLY_BAD = 1;
-    POOR = 2;
-    AVERAGE = 3;
-    GOOD = 4;
-    EXCELLENT = 5;
-}
+// enum Rating {
+//     EXTREMLY_BAD = 1;
+//     POOR = 2;
+//     AVERAGE = 3;
+//     GOOD = 4;
+//     EXCELLENT = 5;
+// }
 
 message BookReview{
     string reviewerId = 1;
     string bookId =2 ;
     string description = 3;
-    Rating ratings = 4;
+    double ratings = 4;
     string bookName = 5;
 }
 
@@ -29,7 +29,7 @@ message AddBookReviewResponse {
     string message = 1;
     string bookName = 2;
     string description = 3;
-    Rating ratings = 4;
+    double ratings = 4;
 }
 
 message DeleteBookReviewRequest{
@@ -46,7 +46,7 @@ message EditBookReviewRequest{
     string reviewerId = 2;
     string bookId = 3;
     string description = 4;
-    Rating ratings = 5;
+    double ratings = 5;
 }
 
 message EditBookReviewResponse{
