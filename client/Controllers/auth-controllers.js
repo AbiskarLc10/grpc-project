@@ -47,9 +47,10 @@ const SignInAuthor = async (req, res, next) => {
         process.env.PRIVATE_KEY,
         { expiresIn: "1hr" }
       );
+      const {_profileImage,...rest} = response.author
       return res
         .status(201)
-        .json({ message: "Sign In Successful", ...response ,token: token});
+        .json({ message: "Sign In Successful", author: rest ,token: token});
     }
   } catch (error) {
     return customErrorHandler(error, next);

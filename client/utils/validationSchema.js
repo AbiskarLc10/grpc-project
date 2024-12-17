@@ -43,6 +43,7 @@ const UpdateBookSchema = z.object({
         "MYSTERY",
         "CONTEMPORARY_FICTION",
         "ADVENTURE",
+        "FICTION"
       ],
       "Invalid genre"
     )

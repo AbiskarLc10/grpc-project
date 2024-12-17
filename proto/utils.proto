@@ -8,6 +8,7 @@ enum Genre {
     MYSTERY = 4;
     CONTEMPORARY_FICTION = 5;
     ADVENTURE = 6;
+    FICTION = 7;
 }
 
 message Author {

@@ -11,10 +11,6 @@ message SignUpRequest {
     Genre genre = 4;
     string date_of_birth = 5;
 }
-
-
-
-
 message SignUpResponse {
     Author author = 1;
     bool success = 2;
@@ -31,7 +27,9 @@ message SignInResponse {
 message UpdateProfileRequest {
     string id = 1;
     string name = 2;
-    Genre genre = 3;
+    oneof genre_choice {
+        Genre genre = 3;
+    }
     string date_of_birth = 4;
 }
 
