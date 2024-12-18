@@ -15,10 +15,7 @@ message SignUpResponse {
     Author author = 1;
     bool success = 2;
 }
-message SignInRequest {
-    string email = 1;
-    string password = 2;
-}
+
 message SignInResponse {
     Author author = 1;
     bool success = 2;

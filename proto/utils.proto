@@ -20,6 +20,10 @@ message Author {
     optional string profileImage = 6;
 }
 
+message SignInRequest {
+    string email = 1;
+    string password = 2;
+}
 
 message Book {
     string id = 1;
@@ -31,4 +35,19 @@ message Book {
     oneof author_info{
         string authorName = 7;
     }
+}
+
+enum UserStatus {
+     ACTIVE = 0;
+     INACTIVE = 1;
+     SUSPENDED = 2;
+}
+
+message Customer {
+    string id = 1;
+    string fullName = 2;
+    string email = 3;
+    string address = 4;
+    string dateOfBirth = 5;
+    UserStatus status = 6;
 }

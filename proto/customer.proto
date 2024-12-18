@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+package customer;
+
+import "utils.proto";
+
+message SignUpCustomerRequest {
+    string fullName = 1;
+    string email = 2;
+    string password = 3;
+    string address = 4;
+    string dateOfBirth = 5;
+}
+
+message SignUpCustomerResponse {
+    string message = 1;
+    bool success = 2;
+}
+
+message SignInCustomerResponse{
+     Customer customer = 1;
+     bool success = 2;
+}
+service CustomerService {
+    rpc SignUpCustomer(SignUpCustomerRequest) returns (SignUpCustomerResponse) {};
+    rpc SignInCustomer(SignInRequest) returns (SignInCustomerResponse) {};
+}
