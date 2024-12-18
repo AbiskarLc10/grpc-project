@@ -2,7 +2,7 @@ const grpc = require("@grpc/grpc-js");
 const bcrypt = require("bcrypt");
 const { Author, Book } = require("../db/models/index");
 const sequelize = require("../db/connection");
-const { QueryTypes,  Sequelize } = require("sequelize");
+const { QueryTypes, Sequelize } = require("sequelize");
 const transporter = require("../transport/mailer");
 
 class AuthorService {
@@ -17,6 +17,7 @@ class AuthorService {
         });
       }
 
+      //Check for existence of user with the same email addresss
       const checkAuthorExists = await sequelize.query(
         "SELECT * FROM authors where email = :email",
         {
@@ -34,6 +35,7 @@ class AuthorService {
         });
       }
 
+      //New author creation
       const newAuthor = await Author.create({
         name: name,
         email: email,
@@ -42,25 +44,12 @@ class AuthorService {
         date_of_birth: new Date(date_of_birth).toISOString(),
       });
 
- 
-
       if (!newAuthor) {
         return callback({
           details: "Failed to create user",
           code: grpc.status.FAILED_PRECONDITION,
         });
       }
-
-      // const code = Math.floor(1000000+Math.random()*9000000)
-      // const emailMessage = await  transporter.sendMail({
-      //   from: 'abiskar1234@out;l',
-      //   to: "lcabi116@gmail.com",
-      //   subject: "App verification code",
-      //   text: "Hello world?",
-      //   html: `<b>Your verification code is ${code}</b>`,
-      // })
-
-      // console.log(emailMessage);
 
       return callback(null, { success: true, author: newAuthor });
     } catch (error) {
@@ -76,12 +65,14 @@ class AuthorService {
       const { email, password } = call.request;
 
       if (!email || !password) {
+        //Error sent back to client incase of missing arguments for login
         return callback({
           details: "Please provide credentials",
           code: grpc.status.INVALID_ARGUMENT,
         });
       }
 
+      //Check for author existence
       const findAuthor = await sequelize.query(
         "SELECT * FROM authors WHERE email=?",
         {
@@ -89,8 +80,7 @@ class AuthorService {
           type: QueryTypes.SELECT,
         }
       );
-      console.log("Hello");
-      console.log(findAuthor);
+
       if (findAuthor.length === 0) {
         return callback({
           details: "User not found",
@@ -161,7 +151,7 @@ class AuthorService {
         where: {
           id: id,
         },
-        transaction: updateTransaction
+        transaction: updateTransaction,
       });
 
       if (affectedCount !== 1) {
@@ -212,7 +202,7 @@ class AuthorService {
     try {
       const { authorId } = call.request;
 
-      console.log(authorId)
+      console.log(authorId);
       if (!authorId) {
         return callback({
           details: "Failed to get Id from user",

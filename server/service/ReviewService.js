@@ -80,7 +80,7 @@ class ReviewService {
       console.error(error);
       await transaction.rollback();
       return callback({
-        details: "Failed to add review to the book",
+        details: error.errors[0]?.message || "Failed to add review to the book",
         code: grpc.status.INTERNAL,
       });
     }

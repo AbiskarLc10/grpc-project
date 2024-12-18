@@ -50,6 +50,12 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "Review",
       timestamps: true,
       paranoid: true,
+      indexes: [
+        {
+          unique: true,
+          fields: ["reviewerId","bookId"]
+        }
+      ]
     }
   );
   return Review;
