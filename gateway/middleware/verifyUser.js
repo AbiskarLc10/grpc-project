@@ -21,9 +21,10 @@ const verifyUser = async (req, res, next) => {
 
     jwt.verify(token, process.env.PRIVATE_KEY, (err, data) => {
       if (err) {
-        if (err.name === "TokenExpiredError") {
+        if (err instanceof jwt.JsonWebTokenError) {
+        
           return customErrorHandler(
-            { code: 401, details: "Token has expired, Login Again!" },
+            { code: 401, details: err.message},
             next
           );
         }

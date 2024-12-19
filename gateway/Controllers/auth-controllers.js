@@ -43,14 +43,14 @@ const SignInAuthor = async (req, res, next) => {
 
     if (response.success) {
       const token = jwt.sign(
-        { id: response.author.id },
+        { id: response.author.id, isAuthor: true },
         process.env.PRIVATE_KEY,
         { expiresIn: "1hr" }
       );
-      const {_profileImage,...rest} = response.author
+      const { _profileImage, ...rest } = response.author;
       return res
         .status(201)
-        .json({ message: "Sign In Successful", author: rest ,token: token});
+        .json({ message: "Sign In Successful", author: rest, token: token });
     }
   } catch (error) {
     return customErrorHandler(error, next);
