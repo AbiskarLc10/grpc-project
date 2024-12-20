@@ -43,7 +43,7 @@ const UpdateBookSchema = z.object({
         "MYSTERY",
         "CONTEMPORARY_FICTION",
         "ADVENTURE",
-        "FICTION"
+        "FICTION",
       ],
       "Invalid genre"
     )
@@ -53,7 +53,11 @@ const UpdateBookSchema = z.object({
 
 const reviewSchema = z.object({
   description: z.string().min(10, "Description must be at least 10 characters"),
-  ratings: z.number("Please enter the ratings between 1 to 5").min(1,"Rating cannot be less than 1").max(5,"Max rating is 5").optional(),
+  ratings: z
+    .number("Please enter the ratings between 1 to 5")
+    .min(1, "Rating cannot be less than 1")
+    .max(5, "Max rating is 5")
+    .optional(),
 });
 
 const dateTimeSchema = z.object({
@@ -61,9 +65,25 @@ const dateTimeSchema = z.object({
   from: z.date(),
 });
 
+const signUpCustomerSchema = z.object({
+  fullName: z.string().min(4, "Full name must be at least 4 characters"),
+  email: z.string().email("Not a valid email address"),
+  password: z
+    .string()
+    .min(6, "Password must have at least 6 characters")
+    .regex(
+      /^(?=.*[A-Z])(?=.*\d)(?=.*[\W_]).+$/,
+      "Password must have a special character, a digit, and an uppercase letter"
+    ),
+  address: z.string(),
+  date_of_birth: z.string().refine((date) => !isNaN(Date.parse(date)), {
+    message: "Must be a valid date string",
+  }),
+});
 module.exports = {
   signUpSchema,
   UpdateBookSchema,
   reviewSchema,
   dateTimeSchema,
+  signUpCustomerSchema
 };

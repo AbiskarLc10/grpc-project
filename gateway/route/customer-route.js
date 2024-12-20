@@ -2,27 +2,24 @@ const express = require("express");
 const CustomerClient = require("../grpc-client/customerClient");
 const grpc = require("@grpc/grpc-js");
 const customErrorHandler = require("../errors/customError");
+const validate = require("../utils/validateData");
+const { signUpCustomerSchema } = require("../utils/validationSchema");
 const router = express.Router();
 
 router.route("/sign-up").post(async (req, res, next) => {
-  // const {fullName,email,password,address,dateOfBirth} = req.body;
+  const { fullName, email, password, address, dateOfBirth } = req.body;
 
   try {
-    const metadata = new grpc.Metadata();
-    metadata.set(
-      "token",
-      "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkFiaXNrYXIgTGFtaWNoaGFuZSIsImlhdCI6MTUxNjIzOTAyMn0.SYApDMktSvZstR4vHmmPxYzZX0_q02amD81U-OTo7bc"
-    );
+    validate(req.body, signUpCustomerSchema);
     const response = await new Promise((resolve, reject) => {
       CustomerClient.SignUpCustomer(
         {
-          fullName: "Abiskar",
-          email: "abdjab",
-          password: "dmakndad",
-          address: "addresss",
-          dateOfBirth: "dnaknd",
+          fullName,
+          email,
+          password,
+          address,
+          dateOfBirth,
         },
-        metadata,
         (error, response) => {
           if (error) {
             reject(error);
@@ -35,10 +32,13 @@ router.route("/sign-up").post(async (req, res, next) => {
 
     return res.status(201).json(response);
   } catch (error) {
-    return customErrorHandler({
-      details: error.details || error.message,
-      code: error.code,
-    });
+    return customErrorHandler(
+      {
+        details: error.details || error.message,
+        code: error.code,
+      },
+      next
+    );
   }
 });
 

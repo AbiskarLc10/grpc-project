@@ -14,21 +14,6 @@ const customerProto = grpc.loadPackageDefinition(customerPackageDefinations);
 
 const customerService = customerProto.customer.CustomerService.service;
 
-const jwtInterceptor = (methodDescriptor, call) => {
-  const listener = new grpc.ServerListenerBuilder()
-    .withOnReceiveMetadata((metadata, next) => {
-      console.log(metadata);
-
-      next(metadata);
-    })
-    .build();
-  const responder = new grpc.ResponderBuilder()
-    .withStart((next) => {
-      next(listener);
-    })
-    .build();
-  return new grpc.ServerInterceptingCall(call, responder);
-};
 
 const customerserver = new grpc.Server({ interceptors: [jwtInterceptor] });
 

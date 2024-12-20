@@ -7,6 +7,7 @@ class CustomerService {
   SignUpCustomer = async (call, callback) => {
     try {
 
+      console.log(call.metadata);
       console.log("Hello")
       // const { fullName, email, password, address, dateOfBirth } = call.request;
 
