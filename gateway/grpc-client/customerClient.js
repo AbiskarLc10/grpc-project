@@ -12,15 +12,14 @@ const customerPackageDefinations = protoloader.loadSync(
 const customerProto = grpc.loadPackageDefinition(customerPackageDefinations);
 
 const jwtInterceptor = (options, nextCall) => {
-  const requester = new grpc.RequesterBuilder()
-    .withStart((metadata, listener, next) => {
-      metadata.set("data", "Hello I am abiskar Lamichhane");
+  const requester = new grpc.RequesterBuilder().withStart(
+    (metadata, listener, next) => {
       next(metadata, listener);
-    })
-    .build();
+    }
+  );
+
   return new grpc.InterceptingCall(nextCall(options), requester);
 };
-
 const CustomerService = customerProto.customer.CustomerService;
 
 const CustomerClient = new CustomerService(
@@ -31,27 +30,33 @@ const CustomerClient = new CustomerService(
   }
 );
 
-const test = async () => {
-  const response = await new Promise((resolve, reject) => {
-    CustomerClient.SignUpCustomer(
-      {
-        fullName: "Abiskar",
-        email: "abdjab",
-        password: "dmakndad",
-        address: "addresss",
-        dateOfBirth: "dnaknd",
-      },
-      (error, response) => {
-        console.log(error);
-        if (error) {
-          reject(error);
-        }
-        resolve(response);
-      }
-    );
-  });
+module.exports = CustomerClient;
 
-  console.log(response);
-};
+// const test = async () => {
+//   try {
+//     const response = await new Promise((resolve, reject) => {
+//       CustomerClient.SignUpCustomer(
+//         {
+//           fullName: "Abiskar",
+//           email: "abdjab",
+//           password: "dmakndad",
+//           address: "addresss",
+//           dateOfBirth: "dnaknd",
+//         },
+//         (error, response) => {
+//           if (error) {
+//             reject(error);
+//           } else {
+//             resolve(response);
+//           }
+//         }
+//       );
+//     });
 
-test();
+//     console.log(response);
+//   } catch (error) {
+//     console.error("Error during sign-up:", error);
+//   }
+// };
+
+// test()
