@@ -4,6 +4,7 @@ const { CUSTOMER_PROTO_PATH, PROTO_LOADER_OPTION } = require("../config");
 const path = require("path");
 const CustomerService = require("../service/CustomerService");
 const sequelize = require("../db/connection");
+const AuthInteceptor = require("../interceptors/authInterceptor");
 const customerProtoPath = path.resolve(CUSTOMER_PROTO_PATH);
 
 const customerPackageDefinations = protoloader.loadSync(
@@ -15,7 +16,7 @@ const customerProto = grpc.loadPackageDefinition(customerPackageDefinations);
 const customerService = customerProto.customer.CustomerService.service;
 
 
-const customerserver = new grpc.Server({ interceptors: [jwtInterceptor] });
+const customerserver = new grpc.Server({ interceptors: [AuthInteceptor] });
 
 customerserver.addService(customerService, new CustomerService());
 sequelize.authenticate().then(() => {

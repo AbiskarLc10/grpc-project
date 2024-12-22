@@ -20,6 +20,7 @@ message SignUpCustomerResponse {
 message SignInCustomerResponse{
      Customer customer = 1;
      bool success = 2;
+     string token = 3;
 }
 service CustomerService {
     rpc SignUpCustomer(SignUpCustomerRequest) returns (SignUpCustomerResponse) {};

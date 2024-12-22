@@ -76,7 +76,7 @@ const signUpCustomerSchema = z.object({
       "Password must have a special character, a digit, and an uppercase letter"
     ),
   address: z.string(),
-  date_of_birth: z.string().refine((date) => !isNaN(Date.parse(date)), {
+  dateOfBirth: z.string().refine((date) => !isNaN(Date.parse(date)), {
     message: "Must be a valid date string",
   }),
 });

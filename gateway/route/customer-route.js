@@ -42,4 +42,28 @@ router.route("/sign-up").post(async (req, res, next) => {
   }
 });
 
+router.route("/sign-in").post(async (req, res, next) => {
+  const { email, password } = req.body;
+  try {
+    const response = await new Promise((resolve, reject) => {
+      CustomerClient.SignInCustomer({ email, password }, (error, response) => {
+        if (error) {
+          reject({
+            details: error.details,
+            code: error.code,
+          });
+        }
+        resolve(response);
+      });
+    });
+
+    return res.status(201).json(response);
+  } catch (error) {
+    console.log(error);
+    return customErrorHandler({
+      details: error.details || error.message,
+      code: error.code || 500,
+    });
+  }
+});
 module.exports = router;
