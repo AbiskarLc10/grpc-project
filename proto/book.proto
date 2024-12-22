@@ -31,6 +31,7 @@ message AddBookRequest {
     Genre genre = 2;
     string authorId = 3;
     string published_date = 4;
+    double price = 5;
 }
 message AddBookResponse {
     string message = 1;
@@ -48,6 +49,7 @@ message UpdateBookRequest {
    optional string bookName = 2;
    optional  Genre genre = 3;
    optional string published_date = 4;
+   optional double price = 5;
 }
 
 message UpdateBookResponse {

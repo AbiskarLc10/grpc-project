@@ -35,12 +35,19 @@ message Book {
     oneof author_info{
         string authorName = 7;
     }
+    double price = 8;
 }
 
 enum UserStatus {
      ACTIVE = 0;
      INACTIVE = 1;
      SUSPENDED = 2;
+}
+
+enum OrderStatus {
+    PENDING = 0;
+    FAILED = 1;
+    DELIVERED = 2;
 }
 
 message Customer {
@@ -50,4 +57,12 @@ message Customer {
     string address = 4;
     string dateOfBirth = 5;
     UserStatus status = 6;
+}
+
+message Order {
+    string id = 1;
+    string bookId = 2;
+    string customerId = 3;
+    double price = 4;
+    OrderStatus status = 5;
 }

@@ -16,7 +16,7 @@ class CustomerService {
         });
       }
 
-      const checkUserExists = await sequelize.query(
+      const [checkUserExists] = await sequelize.query(
         "SELECT * FROM customers WHERE email= :email",
         {
           replacements: {
@@ -71,7 +71,7 @@ class CustomerService {
         });
       }
 
-      const checkCustomerExists = await sequelize.query(
+      const [checkCustomerExists] = await sequelize.query(
         "SELECT * FROM customers WHERE email = :email",
         {
           replacements: {
@@ -87,6 +87,7 @@ class CustomerService {
         });
       }
 
+      console.log(checkCustomerExists[0].password);
       const isValidPassword = await bcrypt.compare(
         password,
         checkCustomerExists[0].password

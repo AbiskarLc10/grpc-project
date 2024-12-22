@@ -49,6 +49,7 @@ const UpdateBookSchema = z.object({
     )
     .optional(),
   published_date: z.string().optional(),
+  price: z.number("Price cannot be an string").optional()
 });
 
 const reviewSchema = z.object({

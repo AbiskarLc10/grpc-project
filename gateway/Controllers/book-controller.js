@@ -122,8 +122,8 @@ const getBookById = async (req, res, next) => {
 
 const addBook = async (req, res, next) => {
   try {
-    const { bookName, genre, published_date } = req.body;
-    const { id } = req.user;
+    const { bookName, genre, published_date, price } = req.body;
+    const { id, isAuthor } = req.user;
 
     if (!bookName || !genre || !published_date) {
       return res.status(400).json({
@@ -132,9 +132,15 @@ const addBook = async (req, res, next) => {
       });
     }
 
+    if (!isAuthor) {
+      return res.status(401).json({
+        message: "Action denied for user access",
+        code: 401,
+      });
+    }
     const response = await new Promise((resolve, reject) => {
       bookClient.AddBook(
-        { bookName, genre, authorId: id, published_date },
+        { bookName, genre, authorId: id, published_date, price },
         (error, response) => {
           if (error) {
             console.log(error);
@@ -245,7 +251,7 @@ const updateBook = async (req, res, next) => {
   try {
     const { bookId, authorId } = req.params;
     const { id } = req.user;
-    const { bookName, published_date, genre } = req.body;
+    let { bookName, published_date, genre, price } = req.body;
 
     if (id !== authorId) {
       return customErrorHandler(
@@ -256,9 +262,10 @@ const updateBook = async (req, res, next) => {
         next
       );
     }
+    if (genre) genre = genre.toUpperCase();
 
-    validate({ ...req.body, genre: genre.toUpperCase() }, UpdateBookSchema);
-    if (!bookName && !authorId && !genre && !published_date) {
+    validate({ ...req.body }, UpdateBookSchema);
+    if (!bookName && !authorId && !genre && !published_date && !price) {
       return res
         .status(400)
         .json({ message: "Please provide field to update", success: false });
@@ -298,10 +305,13 @@ const getBooksByPage = async (req, res, next) => {
     const { pageNo } = req.params;
 
     if (!pageNo) {
-      return customErrorHandler({
-        details: "Page no not provided",
-        code: 400,
-      },next);
+      return customErrorHandler(
+        {
+          details: "Page no not provided",
+          code: 400,
+        },
+        next
+      );
     }
 
     const response = await new Promise((resolve, reject) => {
@@ -317,19 +327,20 @@ const getBooksByPage = async (req, res, next) => {
       });
     });
 
-    return res
-      .status(201)
-      .json({
-        ...response,
-        success: true,
-        message: "Books fetched successfully",
-      });
+    return res.status(201).json({
+      ...response,
+      success: true,
+      message: "Books fetched successfully",
+    });
   } catch (error) {
     console.log(error);
-    return customErrorHandler({
-      details: error.details,
-      code: error.code,
-    },next);
+    return customErrorHandler(
+      {
+        details: error.details,
+        code: error.code,
+      },
+      next
+    );
   }
 };
 
@@ -341,5 +352,5 @@ module.exports = {
   updateBook,
   getBookById,
   getBookByDate,
-  getBooksByPage
+  getBooksByPage,
 };

@@ -63,7 +63,9 @@ router.route("/sign-in").post(async (req, res, next) => {
     return customErrorHandler({
       details: error.details || error.message,
       code: error.code || 500,
-    });
+    },next);
   }
 });
+
+
 module.exports = router;

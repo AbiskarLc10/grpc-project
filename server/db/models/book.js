@@ -11,12 +11,12 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       Book.belongsTo(models.Author, {
-        foreignKey: "authorId",  
-        as: "author",          
+        foreignKey: "authorId",
+        as: "author",
       });
     }
   }
-  
+
   Book.init(
     {
       id: {
@@ -28,17 +28,27 @@ module.exports = (sequelize, DataTypes) => {
       bookName: {
         type: DataTypes.STRING,
         allowNull: false,
-        unique: true
+        unique: true,
       },
       genre: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      authorId: { 
+      authorId: {
         type: DataTypes.UUID,
         allowNull: false,
       },
-      published_date: { 
+      price: {
+        type: DataTypes.FLOAT,
+        defaultValue: 0.0,
+        allowNull: false,
+      },
+      average_ratings: {
+        type: DataTypes.FLOAT,
+        allowNull: false,
+        defaultValue: 3.5,
+      },
+      published_date: {
         type: DataTypes.DATE,
         allowNull: false,
         defaultValue: new Date(),
@@ -46,9 +56,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     {
       sequelize,
-      modelName: "Book",  
-      timestamps: true,   
-      paranoid:true
+      modelName: "Book",
+      timestamps: true,
+      paranoid: true,
     }
   );
 

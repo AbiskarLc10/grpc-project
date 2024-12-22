@@ -6,9 +6,9 @@ const AuthorClient = require("../grpc-client/author");
 class BookService {
   AddBook = async (call, callback) => {
     try {
-      const { bookName, published_date, genre, authorId } = call.request;
+      const { bookName, published_date, genre, authorId, price } = call.request;
 
-      if (!authorId || !bookName || !published_date || !genre) {
+      if (!authorId || !bookName || !published_date || !genre || !price) {
         return callback({
           details: "Please provide all book details",
           code: grpc.status.INVALID_ARGUMENT,
@@ -41,6 +41,7 @@ class BookService {
         genre,
         published_date: new Date(published_date).toISOString(),
         authorId: authorId,
+        price,
       });
 
       if (!newBook) {
@@ -64,7 +65,7 @@ class BookService {
 
   UpdateBook = async (call, callback) => {
     try {
-      const { bookId, bookName, genre, published_date } = call.request;
+      const { bookId, bookName, genre, published_date, price } = call.request;
 
       if (!bookId) {
         return callback({
@@ -77,6 +78,7 @@ class BookService {
       if (bookName) newBookData.bookName = bookName;
       if (genre) newBookData.genre = genre;
       if (published_date) newBookData.published_date = published_date;
+      if (price) newBookData.price = price;
 
       const bookExists = await Book.findOne({
         where: {
@@ -328,7 +330,7 @@ class BookService {
           code: grpc.status.NOT_FOUND,
         });
       }
-      
+
       return callback(null, {
         books: books,
       });
