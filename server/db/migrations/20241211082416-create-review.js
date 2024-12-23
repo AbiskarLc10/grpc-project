@@ -24,6 +24,11 @@ module.exports = {
         type: Sequelize.UUID,
         allowNull: false
       },
+      reviewerType: {
+        type: Sequelize.ENUM("Author", "Customer"),
+        allowNull: false,
+        defaultValue: "Author"
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE
@@ -35,7 +40,7 @@ module.exports = {
     });
 
     await queryInterface.addConstraint("Reviews", {
-      type:'foreign key',
+      type: 'foreign key',
       name: "FK_Book_review",
       fields: ['bookId'],
       references: {
@@ -47,21 +52,19 @@ module.exports = {
     });
 
     await queryInterface.addConstraint("Reviews", {
-      type:'foreign key',
-      name: "FK_Author_review",
-      fields: ['reviewerId'],
-      references: {
-        field: 'id',
-        table: 'Authors'
-      },
-      onDelete: "CASCADE",
-      onUpdate: "CASCADE"
+      type: "check",
+      name: "reviewer_type_check",
+      fields: ['reviewerType'],
+      where: {
+        reviewerType: ['Author', 'Customer'],
+      }
     });
   },
 
   async down(queryInterface, Sequelize) {
+
     await queryInterface.removeConstraint('Reviews', 'FK_Book_review');
-    await queryInterface.removeConstraint('Reviews', 'FK_Author_review');
+    await queryInterface.removeConstraint("Reviews","reviewer_type_check")
 
     await queryInterface.dropTable('Reviews');
   }

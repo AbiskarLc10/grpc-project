@@ -9,13 +9,21 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
+      
+      if (this.reviewerType === "Author") {
+        Review.belongsTo(models.Author, {
+          foreignKey: "reviewerId",
+          as: "reviewer",
+        });
+      } else if (this.reviewerType === "Customer") {
+        Review.belongsTo(models.Customer, {
+          foreignKey: "reviewerId",
+          as: "reviewer",
+        });
+      }
       Review.belongsTo(models.Book, {
         foreignKey: "bookId",
         as: "book",
-      });
-      Review.belongsTo(models.Author, {
-        foreignKey: "reviewerId",
-        as: "reviewer",
       });
     }
   }
@@ -33,6 +41,11 @@ module.exports = (sequelize, DataTypes) => {
       },
       reviewerId: {
         type: DataTypes.UUID,
+        allowNull: false,
+      },
+      reviewerType: {
+        type: DataTypes.ENUM("Author", "Customer"),
+        defaultValue: "Author",
         allowNull: false,
       },
       description: {
@@ -53,9 +66,9 @@ module.exports = (sequelize, DataTypes) => {
       indexes: [
         {
           unique: true,
-          fields: ["reviewerId","bookId"]
-        }
-      ]
+          fields: ["reviewerId", "bookId"],
+        },
+      ],
     }
   );
   return Review;

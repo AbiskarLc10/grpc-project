@@ -53,6 +53,11 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
         defaultValue: new Date(),
       },
+      stock: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 10,
+      },
     },
     {
       sequelize,

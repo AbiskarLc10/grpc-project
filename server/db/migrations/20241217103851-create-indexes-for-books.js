@@ -15,6 +15,12 @@ module.exports = {
       unique: true,
       fields: ["bookId", "reviewerId"],
     });
+
+    await queryInterface.addColumn("Books", "stock", {
+      type: Sequelize.INTEGER,
+      allowNull: false,
+      defaultValue: 10,
+    });
   },
 
   async down(queryInterface, Sequelize) {
@@ -24,7 +30,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-
     await queryInterface.removeIndex("Reviews", "Unique_review_index");
   },
 };
