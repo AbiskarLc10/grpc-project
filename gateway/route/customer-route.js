@@ -60,12 +60,61 @@ router.route("/sign-in").post(async (req, res, next) => {
     return res.status(201).json(response);
   } catch (error) {
     console.log(error);
+    return customErrorHandler(
+      {
+        details: error.details || error.message,
+        code: error.code || 500,
+      },
+      next
+    );
+  }
+});
+
+router.route("/order-book/:bookId").post(async (req, res, next) => {
+  if (!req.headers.authorization) {
+    return customErrorHandler(
+      {
+        details: "Token not found.Please login!",
+        code: 404,
+      },
+      next
+    );
+  }
+  const metadata = new grpc.Metadata();
+  metadata.add("token", req.headers.authorization);
+  const { bookId } = req.params;
+  let { quantity } = req.body;
+  if (!bookId) {
+    return customErrorHandler(
+      {
+        details: "Failed to get url params",
+        code: 400,
+      },
+      next
+    );
+  }
+  try {
+    const response = await new Promise((resolve, reject) => {
+      CustomerClient.OrderBook(
+        { bookId, quantity },
+        metadata,
+        (error, response) => {
+          if (error) {
+            reject(error);
+          }
+          resolve(response);
+        }
+      );
+    });
+
+    return res.status(201).json(response);
+  } catch (error) {
+    console.log(error);
     return customErrorHandler({
       details: error.details || error.message,
       code: error.code || 500,
     },next);
   }
 });
-
 
 module.exports = router;

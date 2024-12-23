@@ -4,6 +4,7 @@ const validate = require("../utils/validateData");
 const {
   UpdateBookSchema,
   dateTimeSchema,
+  addBookSchema,
 } = require("../utils/validationSchema");
 
 const getAllBooks = async (req, res, next) => {
@@ -122,15 +123,8 @@ const getBookById = async (req, res, next) => {
 
 const addBook = async (req, res, next) => {
   try {
-    const { bookName, genre, published_date, price } = req.body;
+    let { bookName, genre, published_date, price } = req.body;
     const { id, isAuthor } = req.user;
-
-    if (!bookName || !genre || !published_date) {
-      return res.status(400).json({
-        message: "Please provide book name, genre and published date",
-        success: false,
-      });
-    }
 
     if (!isAuthor) {
       return res.status(401).json({
@@ -138,6 +132,8 @@ const addBook = async (req, res, next) => {
         code: 401,
       });
     }
+    validate({ ...req.body, genre: genre.toUpperCase() }, addBookSchema);
+
     const response = await new Promise((resolve, reject) => {
       bookClient.AddBook(
         { bookName, genre, authorId: id, published_date, price },
@@ -251,7 +247,7 @@ const updateBook = async (req, res, next) => {
   try {
     const { bookId, authorId } = req.params;
     const { id } = req.user;
-    let { bookName, published_date, genre, price } = req.body;
+    let { bookName, published_date, genre, price, stock } = req.body;
 
     if (id !== authorId) {
       return customErrorHandler(
@@ -265,7 +261,14 @@ const updateBook = async (req, res, next) => {
     if (genre) genre = genre.toUpperCase();
 
     validate({ ...req.body }, UpdateBookSchema);
-    if (!bookName && !authorId && !genre && !published_date && !price) {
+    if (
+      !bookName &&
+      !authorId &&
+      !genre &&
+      !published_date &&
+      !price &&
+      !stock
+    ) {
       return res
         .status(400)
         .json({ message: "Please provide field to update", success: false });

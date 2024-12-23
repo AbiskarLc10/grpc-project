@@ -2,7 +2,7 @@ const bcrypt = require("bcrypt");
 const grpc = require("@grpc/grpc-js");
 const sequelize = require("../db/connection");
 const { Sequelize } = require("../db/models");
-const { Customer } = require("../db/models/index");
+const { Customer, Book, Order } = require("../db/models/index");
 const jwt = require("jsonwebtoken");
 class CustomerService {
   SignUpCustomer = async (call, callback) => {
@@ -120,6 +120,82 @@ class CustomerService {
       console.log(error);
       return callback({
         details: "Failed to sign in customer",
+        code: grpc.status.INTERNAL,
+      });
+    }
+  };
+
+  OrderBook = async (call, callback) => {
+    const data = call.metadata.get("decodedToken");
+
+    const { id, isAuthor } = data[0];
+
+    const { bookId, quantity } = call.request;
+
+    if (isAuthor) {
+      return callback({
+        details: "Please create a customer account to purchase book",
+        code: grpc.status.CANCELLED,
+      });
+    }
+    const transaction = await sequelize.transaction();
+    try {
+      const checkBookExists = await Book.findOne({
+        where: {
+          id: bookId,
+        },
+      });
+
+      if (!checkBookExists) {
+        return callback({
+          details: "Book does not exists",
+          code: grpc.status.NOT_FOUND,
+        });
+      }
+
+      let price = checkBookExists.price * quantity;
+
+      if (checkBookExists.stock < quantity) {
+        return callback({
+          details: `${checkBookExists.stock} are avaiable on stock`,
+          code: grpc.status.CANCELLED,
+        });
+      }
+      const newOrder = await Order.create(
+        {
+          bookId,
+          customerId: id,
+          price: price,
+          quantity: quantity,
+        },
+        {
+          transaction: transaction,
+        }
+      );
+
+      await Book.update(
+        {
+          stock: checkBookExists.stock - quantity,
+        },
+
+        {
+          where: {
+            id: bookId,
+          },
+          transaction: transaction,
+        }
+      );
+
+      await transaction.commit();
+      return callback(null, {
+        message: "Order created successfully",
+        order: newOrder,
+      });
+    } catch (error) {
+      console.log(error);
+      await transaction.rollback();
+      return callback({
+        details: "Failed to initiate book order",
         code: grpc.status.INTERNAL,
       });
     }

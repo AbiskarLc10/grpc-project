@@ -6,7 +6,7 @@ const { reviewSchema } = require("../utils/validationSchema");
 
 const addBookReview = async (req, res, next) => {
   try {
-    const { id } = req.user;
+    const { id, isAuthor } = req.user;
     const { bookId } = req.params;
     const { description, ratings } = req.body;
 
@@ -14,7 +14,15 @@ const addBookReview = async (req, res, next) => {
 
     const response = await new Promise((resolve, reject) => {
       ReviewClient.AddBookReview(
-        { review: { bookId: bookId, reviewerId: id, description,ratings } },
+        {
+          review: {
+            bookId: bookId,
+            reviewerId: id,
+            description,
+            ratings,
+            reviewerType: isAuthor ? 1 : 0,
+          },
+        },
         (error, response) => {
           if (error) {
             console.log(error);
@@ -144,13 +152,11 @@ const getBookReviewsById = async (req, res, next) => {
     });
 
     console.log(response);
-    return res
-      .status(201)
-      .json({
-        ...response,
-        message: "Book reviews fetched successfully",
-        success: true,
-      });
+    return res.status(201).json({
+      ...response,
+      message: "Book reviews fetched successfully",
+      success: true,
+    });
   } catch (error) {
     console.log(error);
     return customErrorHandler({
@@ -160,4 +166,9 @@ const getBookReviewsById = async (req, res, next) => {
   }
 };
 
-module.exports = { addBookReview, deleteReview, editBookReview, getBookReviewsById };
+module.exports = {
+  addBookReview,
+  deleteReview,
+  editBookReview,
+  getBookReviewsById,
+};

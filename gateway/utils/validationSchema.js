@@ -27,6 +27,37 @@ const signUpSchema = z.object({
   }),
 });
 
+const addBookSchema = z.object({
+  bookName: z.string().min(5, "Book must contain atleast 5 characters"),
+
+  genre: z.enum(
+    [
+      "FANTASY",
+      "CLASSICS",
+      "DYSTOPIAN",
+      "HISTORICAL_FICTION",
+      "MYSTERY",
+      "CONTEMPORARY_FICTION",
+      "ADVENTURE",
+      "FICTION",
+    ],
+    "Invalid genre"
+  ),
+  price: z
+    .number("Price must be a valid number")
+    .min(0, "Price must be a positive number")
+    .refine((value) => value > 0, {
+      message: "Price must be greater than 0",
+    }),
+
+  stock: z
+    .number("Stock must be a valid number")
+    .int("Stock must be an integer")
+    .min(0, "Stock must be at least 0")
+    .refine((value) => value >= 0, {
+      message: "Stock must be a non-negative integer",
+    }),
+});
 const UpdateBookSchema = z.object({
   bookName: z
     .string()
@@ -49,7 +80,13 @@ const UpdateBookSchema = z.object({
     )
     .optional(),
   published_date: z.string().optional(),
-  price: z.number("Price cannot be an string").optional()
+  price: z.number("Price cannot be an string").optional(),
+  stock: z
+    .number("Stock cannot be an string")
+    .refine((number) => Number.isInteger(number), {
+      message: "Must be an integer",
+    })
+    .optional(),
 });
 
 const reviewSchema = z.object({
@@ -86,5 +123,6 @@ module.exports = {
   UpdateBookSchema,
   reviewSchema,
   dateTimeSchema,
-  signUpCustomerSchema
+  signUpCustomerSchema,
+  addBookSchema,
 };

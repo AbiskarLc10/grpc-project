@@ -6,7 +6,8 @@ const AuthorClient = require("../grpc-client/author");
 class BookService {
   AddBook = async (call, callback) => {
     try {
-      const { bookName, published_date, genre, authorId, price } = call.request;
+      const { bookName, published_date, genre, authorId, price, stock } =
+        call.request;
 
       if (!authorId || !bookName || !published_date || !genre || !price) {
         return callback({
@@ -42,6 +43,7 @@ class BookService {
         published_date: new Date(published_date).toISOString(),
         authorId: authorId,
         price,
+        stock
       });
 
       if (!newBook) {

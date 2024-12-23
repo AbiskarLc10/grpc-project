@@ -18,8 +18,13 @@ message BookReview{
     string description = 3;
     double ratings = 4;
     string bookName = 5;
+    ReviewerType reviewerType = 6;
 }
 
+enum ReviewerType{
+    CUSTOMER = 0;
+    AUTHOR = 1;
+}
 
 message AddBookReviewRequest {
     BookReview review = 1;
@@ -30,6 +35,7 @@ message AddBookReviewResponse {
     string bookName = 2;
     string description = 3;
     double ratings = 4;
+    ReviewerType reviewerType = 5;
 }
 
 message DeleteBookReviewRequest{

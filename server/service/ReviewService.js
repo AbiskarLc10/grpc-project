@@ -5,7 +5,8 @@ class ReviewService {
   AddBookReview = async (call, callback) => {
     const transaction = await sequelize.transaction();
     try {
-      const { reviewerId, bookId, description, ratings } = call.request.review;
+      const { reviewerId, bookId, description, ratings, reviewerType } =
+        call.request.review;
 
       if (!reviewerId || !bookId || !description || !ratings) {
         return callback({
@@ -40,6 +41,7 @@ class ReviewService {
           bookId: bookId,
           description: description,
           ratings: ratings,
+          reviewerType,
         },
         {
           transaction: transaction,
@@ -75,6 +77,7 @@ class ReviewService {
         bookName: checkBookExists.bookName,
         description: description,
         ratings: ratings,
+        reviewerType
       });
     } catch (error) {
       console.error(error);

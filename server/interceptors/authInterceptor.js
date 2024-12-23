@@ -1,5 +1,6 @@
 const grpc = require("@grpc/grpc-js");
 const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 const validateMetaData = (tokenData, call) => {
   const token = tokenData.split(" ")[1];
@@ -10,8 +11,11 @@ const validateMetaData = (tokenData, call) => {
       code: grpc.status.NOT_FOUND,
     });
   }
-  return jwt.verify(token, process.env.PRIVATEKEY, (error, data) => {
-    if (err) {
+
+  console.log(process.env.PRIVATE_KEY);
+
+  return jwt.verify(token, process.env.PRIVATE_KEY, (error, data) => {
+    if (error) {
       if (error instanceof jwt.JsonWebTokenError) {
         return call.sendStatus({
           details: error.message,
@@ -40,7 +44,7 @@ const AuthInteceptor = (methodDescriptor, call) => {
             code: grpc.status.UNAUTHENTICATED,
           });
         }
-        const data = validateMetaData(metadata, call);
+        const data = validateMetaData(authorization[0], call);
         if (data) {
           metadata.set("decodedToken", data);
           next(metadata);

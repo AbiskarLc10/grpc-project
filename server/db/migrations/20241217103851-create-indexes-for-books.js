@@ -10,17 +10,18 @@ module.exports = {
      * await queryInterface.createTable('users', { id: Sequelize.INTEGER });
      */
 
-    await queryInterface.addIndex("Reviews", {
-      name: "Unique_review_index",
-      unique: true,
-      fields: ["bookId", "reviewerId"],
+    // await queryInterface.addIndex("Reviews", {
+    //   name: "Unique_review_index",
+    //   unique: true,
+    //   fields: ["bookId", "reviewerId"],
+    // });
+
+    await queryInterface.addColumn("Reviews", "ratings", {
+      type: Sequelize.FLOAT,
+      allowNull: false,
+      defaultValue: 3
     });
 
-    await queryInterface.addColumn("Books", "stock", {
-      type: Sequelize.INTEGER,
-      allowNull: false,
-      defaultValue: 10,
-    });
   },
 
   async down(queryInterface, Sequelize) {
@@ -30,6 +31,6 @@ module.exports = {
      * Example:
      * await queryInterface.dropTable('users');
      */
-    await queryInterface.removeIndex("Reviews", "Unique_review_index");
+    // await queryInterface.removeIndex("Reviews", "Unique_review_index");
   },
 };
