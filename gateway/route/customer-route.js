@@ -110,11 +110,103 @@ router.route("/order-book/:bookId").post(async (req, res, next) => {
     return res.status(201).json(response);
   } catch (error) {
     console.log(error);
-    return customErrorHandler({
-      details: error.details || error.message,
-      code: error.code || 500,
-    },next);
+    return customErrorHandler(
+      {
+        details: error.details || error.message,
+        code: error.code || 500,
+      },
+      next
+    );
   }
 });
 
+router.route("/cancel-order/:orderId").delete(async (req, res, next) => {
+  const { orderId } = req.params;
+  const token = req.headers.authorization;
+  if (!token) {
+    return customErrorHandler(
+      {
+        details: "Token not found.Please login!",
+        code: 401,
+      },
+      next
+    );
+  }
+  const metadata = new grpc.Metadata();
+  metadata.add("token", token);
+  try {
+    const response = await new Promise((resolve, reject) => {
+      CustomerClient.CancelBookOrder(
+        { orderId },
+        metadata,
+        (error, response) => {
+          if (error) {
+            console.log(error);
+            reject({
+              details: error.details,
+              code: error.code,
+            });
+          }
+          resolve(response);
+        }
+      );
+    });
+
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+    return customErrorHandler(
+      {
+        details: error.details || error.message,
+        code: error.code || 500,
+      },
+      next
+    );
+  }
+});
+
+router.route("/get-order/:orderId").get(async (req, res, next) => {
+  try {
+    const { orderId } = req.params;
+    const token = req.headers.authorization;
+    if (!token) {
+      return customErrorHandler(
+        {
+          details: "Token not found.Please login!",
+          code: 401,
+        },
+        next
+      );
+    }
+    const metadata = new grpc.Metadata();
+    metadata.add("token", token);
+    const response = await new Promise((resolve, reject) => {
+      CustomerClient.GetOrderDetails(
+        { orderId },
+        metadata,
+        (error, response) => {
+          if (error) {
+            console.log(error);
+            reject({
+              details: error.details,
+              code: error.code,
+            });
+          }
+          resolve(response);
+        }
+      );
+    });
+
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+    return customErrorHandler(
+      {
+        details: error.details || error.message,
+        code: error.code || 500,
+      },
+      next
+    );
+  }
+});
 module.exports = router;

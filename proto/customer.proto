@@ -33,8 +33,27 @@ message OrderBookResponse {
     string message = 1;
     Order order = 2;
 }
+
+message CancelBookOrderRequest{
+    string orderId = 1;
+}
+
+message CancelBookOrderResponse{
+    string message = 1;
+    bool success = 2;
+}
+
+message GetOrderDetailsRequest{
+    string orderId = 1;
+}
+
+message GetOrderDetailsResponse{
+    Order order = 1;
+}
 service CustomerService {
     rpc SignUpCustomer(SignUpCustomerRequest) returns (SignUpCustomerResponse) {};
     rpc SignInCustomer(SignInRequest) returns (SignInCustomerResponse) {};
     rpc OrderBook(OrderBookRequest) returns (OrderBookResponse) {};
+    rpc CancelBookOrder(CancelBookOrderRequest) returns (CancelBookOrderResponse) {};
+    rpc GetOrderDetails(GetOrderDetailsRequest) returns (GetOrderDetailsResponse) {};
 }

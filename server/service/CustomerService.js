@@ -200,6 +200,116 @@ class CustomerService {
       });
     }
   };
+
+  CancelBookOrder = async (call, callback) => {
+    const decodedData = call.metadata.get("decodedToken");
+    const { id } = decodedData[0];
+    const { orderId } = call.request;
+    const cancelOrderTransaction = await sequelize.transaction();
+    try {
+      const checkOrder = await Order.findOne({
+        where: {
+          id: orderId,
+          customerId: id,
+        },
+      });
+
+      if (!checkOrder) {
+        return callback({
+          details: "Order does not exists",
+          code: grpc.status.NOT_FOUND,
+        });
+      }
+
+      const findBook = await Book.findOne({
+        where: {
+          id: checkOrder.bookId,
+        },
+      });
+
+      let { stock } = findBook;
+
+      stock = stock + checkOrder.quantity;
+      await Order.destroy({
+        where: {
+          id: orderId,
+          customerId: id,
+        },
+        transaction: cancelOrderTransaction,
+      });
+
+      const [affectedCount] = await Book.update(
+        {
+          stock: stock,
+        },
+        {
+          where: {
+            id: findBook.id,
+          },
+          transaction: cancelOrderTransaction,
+        }
+      );
+
+      if (affectedCount === 0) {
+        throw {
+          details: "Failed to update table",
+          code: grpc.status.UNKNOWN,
+        };
+      }
+
+      await cancelOrderTransaction.commit();
+
+      return callback(null, {
+        message: "Order cancelled successfully",
+        success: true,
+      });
+    } catch (error) {
+      console.log(error);
+      await cancelOrderTransaction.rollback();
+      return callback({
+        details: "Failed to cancel your order",
+        code: grpc.status.INTERNAL,
+      });
+    }
+  };
+
+  GetOrderDetails = async (call, callback) => {
+    try {
+      const decodedData = call.metadata.get("decodedToken");
+      const { id } = decodedData[0];
+      const { orderId } = call.request;
+      if (!orderId) {
+        return callback({
+          details: "Required argument missing",
+          code: grpc.status.INVALID_ARGUMENT,
+        });
+      }
+
+      const orderDetails = await Order.findOne({
+        where: {
+          id: orderId,
+          customerId: id,
+        },
+      });
+
+      if (!orderDetails) {
+        return callback({
+          details: "Order not found",
+          code: grpc.status.NOT_FOUND,
+        });
+      }
+
+      return callback(null,{
+        order: orderDetails
+      })
+    } catch (error) {
+      console.log(error);
+      return callback({
+        details: "Failed to fetch details",
+        code: grpc.status.INTERNAL,
+      });
+    }
+  };
 }
 
 module.exports = CustomerService;
