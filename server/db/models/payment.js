@@ -34,6 +34,7 @@ module.exports = (sequelize, DataTypes) => {
       paymentMethod: {
         type: DataTypes.ENUM("CreditCard", "BankTransfer", "PhonePay"),
         allowNull: false,
+        defaultValue: "CreditCard",
       },
       paymentStatus: {
         type: DataTypes.ENUM("Pending", "Completed", "Failed", "Refunded"),

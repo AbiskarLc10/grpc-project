@@ -48,6 +48,7 @@ router.route("/initiate-payment/:orderId").post(async (req, res, next) => {
     });
 
     if (response.success) {
+      console.log(response);
       const session = await stripe.checkout.sessions.create({
         line_items: [
           {
@@ -65,11 +66,13 @@ router.route("/initiate-payment/:orderId").post(async (req, res, next) => {
         success_url: `${process.env.BASE_URL}/api/payment/success?session_id={CHECKOUT_SESSION_ID}`,
         cancel_url: `${process.env.BASE_URL}/api/payment/cancel?session_id={CHECKOUT_SESSION_ID}`,
         metadata: {
-          orderId: response.orderId,
+          orderId: response.paymentDetails.orderId,
         },
       });
 
-      return res.redirect(session.url);
+      return res.status(200).json({
+        paymentUrl: session.url,
+      });
     }
   } catch (error) {
     console.log(error);
@@ -82,13 +85,20 @@ router.route("/initiate-payment/:orderId").post(async (req, res, next) => {
     );
   }
 });
-
-router.route("/success", async (req, res, next) => {
+router.route("/success").get(async (req, res, next) => {
   try {
+    const { session_id } = req.query;
 
-    
+    const session = await stripe.checkout.sessions.retrieve(session_id);
+
+    const { orderId } = session.metadata;
+
+    console.log(session);
+
+    return res.status(200).json({ orderId });
   } catch (error) {
     console.log(error);
+
     return customErrorHandler(
       {
         details: error.details || error.message,
