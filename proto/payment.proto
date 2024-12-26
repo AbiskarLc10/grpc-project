@@ -1,0 +1,20 @@
+syntax = "proto3";
+
+package payment;
+
+
+enum PaymentStatus {
+    PENDING = 1;
+    COMPLETED = 2;
+    FAILED = 3;
+    REFUNDED = 4;
+}
+
+message Payment{
+     string id = 1;
+     string orderId = 2;
+     double totalAmount = 3;
+     PaymentStatus paymentStatus = 4;
+}
+
+

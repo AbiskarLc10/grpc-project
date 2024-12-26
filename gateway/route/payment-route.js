@@ -1,0 +1,102 @@
+const express = require("express");
+const CustomerClient = require("../grpc-client/customerClient");
+require("dotenv").config();
+const router = express.Router();
+const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
+const grpc = require("@grpc/grpc-js");
+const customErrorHandler = require("../errors/customError");
+
+router.route("/initiate-payment/:orderId").post(async (req, res, next) => {
+  const { orderId } = req.params;
+  const token = req.headers.authorization;
+  if (!token) {
+    return customErrorHandler(
+      {
+        details: "Token not found.Please login!",
+        code: 401,
+      },
+      next
+    );
+  }
+
+  if (!orderId) {
+    return customErrorHandler(
+      {
+        details: "Failed to get the parameters",
+        code: 404,
+      },
+      next
+    );
+  }
+  const metadata = new grpc.Metadata();
+  metadata.add("token", token);
+  try {
+    const response = await new Promise((resolve, reject) => {
+      CustomerClient.InitiateOrderPayment(
+        { orderId },
+        metadata,
+        (error, response) => {
+          if (error) {
+            reject({
+              details: error.details,
+              code: error.code,
+            });
+          }
+          resolve(response);
+        }
+      );
+    });
+
+    if (response.success) {
+      const session = await stripe.checkout.sessions.create({
+        line_items: [
+          {
+            price_data: {
+              currency: "usd",
+              product_data: {
+                name: response.bookName,
+              },
+              unit_amount: response.price * 100,
+            },
+            quantity: response.quantity,
+          },
+        ],
+        mode: "payment",
+        success_url: `${process.env.BASE_URL}/api/payment/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${process.env.BASE_URL}/api/payment/cancel?session_id={CHECKOUT_SESSION_ID}`,
+        metadata: {
+          orderId: response.orderId,
+        },
+      });
+
+      return res.redirect(session.url);
+    }
+  } catch (error) {
+    console.log(error);
+    return customErrorHandler(
+      {
+        details: error.details || error.message,
+        code: error.code,
+      },
+      next
+    );
+  }
+});
+
+router.route("/success", async (req, res, next) => {
+  try {
+
+    
+  } catch (error) {
+    console.log(error);
+    return customErrorHandler(
+      {
+        details: error.details || error.message,
+        code: error.code,
+      },
+      next
+    );
+  }
+});
+
+module.exports = router;

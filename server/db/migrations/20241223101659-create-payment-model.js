@@ -12,6 +12,7 @@ module.exports = {
       orderId: {
         type: Sequelize.UUID,
         allowNull: false,
+        unique: true,
       },
       totalAmount: {
         type: Sequelize.FLOAT,
@@ -20,6 +21,7 @@ module.exports = {
       paymentMethod: {
         type: Sequelize.ENUM("CreditCard", "BankTransfer", "PhonePay"),
         allowNull: false,
+        defaultValue: "CreditCard",
       },
       paymentStatus: {
         type: Sequelize.ENUM("Pending", "Completed", "Failed", "Refunded"),
