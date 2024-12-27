@@ -11,6 +11,7 @@ const {
   REVIEW_PROTO_PATH,
   CUSTOMER_PROTO_PATH,
   CUSTOMER_HOST_URL,
+  PAYMENT_PROTO_PATH,
 } = require("./config");
 
 //Classes for rpc method implementation of BookService, AuthorService and ReviewService
@@ -18,6 +19,7 @@ const BookService = require("./service/BookService");
 const AuthorService = require("./service/AuthorService");
 const ReviewService = require("./service/ReviewService");
 const CustomerService = require("./service/CustomerService");
+const PaymentService = require("./service/PaymentService");
 
 //Conection variable
 const sequelize = require("./db/connection");
@@ -28,10 +30,17 @@ const bookProtoPath = path.resolve(BOOK_PROTO_PATH);
 const authorProtoPath = path.resolve(AUTHOR_PROTO_PATH);
 const reviewProtoPath = path.resolve(REVIEW_PROTO_PATH);
 const customerProtoPath = path.resolve(CUSTOMER_PROTO_PATH);
+const paymentProtoPath = path.resolve(PAYMENT_PROTO_PATH);
 
 //Package Defination of Proto Files
 const packageDefinations = protoloader.loadSync(
-  [bookProtoPath, authorProtoPath, reviewProtoPath, customerProtoPath],
+  [
+    bookProtoPath,
+    authorProtoPath,
+    reviewProtoPath,
+    customerProtoPath,
+    paymentProtoPath,
+  ],
   PROTO_LOADER_OPTION
 );
 
@@ -44,6 +53,7 @@ const bookService = Proto.book.BookService.service;
 const authorService = Proto.author.AuthorService.service;
 const reviewService = Proto.review.ReviewService.service;
 const customerService = Proto.customer.CustomerService.service;
+const paymentService = Proto.payment.PaymentService.service;
 
 //Initialized Server
 const server = new grpc.Server();
@@ -59,6 +69,7 @@ server.addService(reviewService, new ReviewService());
 
 //adding service to customer server
 customerServer.addService(customerService, new CustomerService());
+customerServer.addService(paymentService, new PaymentService());
 
 sequelize
   .authenticate()

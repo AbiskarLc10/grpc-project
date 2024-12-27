@@ -33,6 +33,7 @@ const customerserver = new grpc.Server({ interceptors: [AuthInteceptor] });
 customerserver.addService(customerService, new CustomerService());
 customerserver.addService(paymentService, new PaymentService());
 
+
 sequelize.authenticate().then(() => {
   console.log("Connected to database Successfully");
 

@@ -21,6 +21,7 @@ const jwtInterceptor = (options, nextCall) => {
 
   return new grpc.InterceptingCall(nextCall(options), requester);
 };
+
 const CustomerService = customerProto.customer.CustomerService;
 
 const CustomerClient = new CustomerService(
