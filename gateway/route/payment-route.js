@@ -146,14 +146,6 @@ router.route("/cancel").get(async (req, res, next) => {
 
     const { orderId, paymentId } = session.metadata;
 
-    let paymentMethodId;
-
-    const paymentIntent = await stripe.paymentIntents.retrieve(
-      session.payment_intent
-    );
-    paymentMethodId = paymentIntent.payment_method;
-    // const paymentMethod = await stripe.paymentMethods.retrieve(paymentMethodId);
-
     const response = await new Promise((resolve, reject) => {
       PaymentClient.PaymentCancel({ orderId, paymentId }, (error, response) => {
         if (error) {

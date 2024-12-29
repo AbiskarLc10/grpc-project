@@ -33,6 +33,12 @@ class PaymentService {
           code: grpc.status.NOT_FOUND,
         });
       }
+      if (orderDetails.orderStatus === "DELIVERED") {
+        return callback({
+          details: "You order has already delivered",
+          code: grpc.status.ALREADY_EXISTS,
+        });
+      }
 
       let payment = await Payment.findOne({
         where: {
@@ -45,7 +51,7 @@ class PaymentService {
         if (payment.paymentStatus === "Failed") {
           await Payment.update(
             { paymentStatus: "Pending" },
-            { where: { orderId: orderId }, transaction: paymentTransaction }
+            { where: { orderId: orderId }, transaction: paymentTransaction}
           );
           console.log(
             `Payment status for order ${orderId} updated to Pending.`
@@ -147,14 +153,13 @@ class PaymentService {
       }
 
       if (payment.paymentStatus === "Pending") {
-        await Payment.update(
+        await sequelize.query(
+          "UPDATE payments SET paymentStatus= :paymentStatus, paymentIntendId= :paymentIntendId, paymentMethodId= :paymentMethodId WHERE id = :id",
           {
-            paymentStatus: "Completed",
-            paymentIntendId,
-            paymentMethodId,
-          },
-          {
-            where: {
+            replacements: {
+              paymentStatus: "Completed",
+              paymentIntendId,
+              paymentMethodId,
               id: paymentId,
             },
             transaction: paymentTransaction,

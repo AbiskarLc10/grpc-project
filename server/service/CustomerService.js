@@ -300,7 +300,7 @@ class CustomerService {
       }
 
       return callback(null, {
-        order: orderDetails,
+        order: { ...orderDetails.dataValues, status: orderDetails.orderStatus },
       });
     } catch (error) {
       console.log(error);
@@ -310,8 +310,6 @@ class CustomerService {
       });
     }
   };
-
- 
 }
 
 module.exports = CustomerService;
