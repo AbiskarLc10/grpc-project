@@ -161,26 +161,26 @@ class AuthorService {
         });
       }
 
-      // await Author.update(dataToUpdate, {
-      //   where: {
-      //     id: id,
-      //   },
-      //   transaction: updateTransaction,
-      // });
+      await Author.update(dataToUpdate, {
+        where: {
+          id: id,
+        },
+        transaction: updateTransaction,
+      });
 
-      // if (dataToUpdate.genre) {
-      //   await Book.update(
-      //     {
-      //       genre: genre,
-      //     },
-      //     {
-      //       where: {
-      //         authorId: id,
-      //       },
-      //       transaction: updateTransaction,
-      //     }
-      //   );
-      // }
+      if (dataToUpdate.genre) {
+        await Book.update(
+          {
+            genre: genre,
+          },
+          {
+            where: {
+              authorId: id,
+            },
+            transaction: updateTransaction,
+          }
+        );
+      }
 
       await updateTransaction.commit();
 
