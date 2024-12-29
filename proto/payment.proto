@@ -30,22 +30,36 @@ message InitiateOrderPaymentResponse {
         double price = 5;
 }
 
-message PaymentRequest{
+message PaymentSuccessRequest{
     string orderId = 1;
     string paymentId = 2;
+    string paymentIntendId = 3;
+    string paymentMethodId = 4;
+}
+message PaymentSuccessResponse {
+    bool success = 1;
+    string message = 2;
 }
 
-message PaymentResponse {
+message PaymentCancelRequest{
+    string orderId = 1;
+    string paymentId = 2;
+
+}
+
+message PaymentCancelResponse {
   bool success = 1;
   string message = 2;
 }
 
 
+
+
 service PaymentService {
     
     rpc InitiateOrderPayment(InitiateOrderPaymentRequest) returns (InitiateOrderPaymentResponse) {};
-    rpc PaymentSuccess(PaymentRequest) returns (PaymentResponse) {};
-    rpc PaymentCancel (PaymentRequest) returns (PaymentResponse) {};
+    rpc PaymentSuccess(PaymentSuccessRequest) returns (PaymentSuccessResponse) {};
+    rpc PaymentCancel (PaymentCancelRequest) returns (PaymentCancelResponse) {};
 }
 
 

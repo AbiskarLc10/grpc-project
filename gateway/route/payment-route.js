@@ -94,9 +94,24 @@ router.route("/success").get(async (req, res, next) => {
 
     const { orderId, paymentId } = session.metadata;
 
+    let paymentMethodId;
+
+    const paymentIntent = await stripe.paymentIntents.retrieve(
+      session.payment_intent
+    );
+    paymentMethodId = paymentIntent.payment_method;
+    const paymentMethod = await stripe.paymentMethods.retrieve(paymentMethodId);
+
+    console.log(paymentMethod);
+
     const response = await new Promise((resolve, reject) => {
       PaymentClient.PaymentSuccess(
-        { orderId, paymentId },
+        {
+          orderId,
+          paymentId,
+          paymentIntendId: paymentIntent.id,
+          paymentMethodId,
+        },
         (error, response) => {
           if (error) {
             reject({
@@ -130,6 +145,14 @@ router.route("/cancel").get(async (req, res, next) => {
     const session = await stripe.checkout.sessions.retrieve(session_id);
 
     const { orderId, paymentId } = session.metadata;
+
+    let paymentMethodId;
+
+    const paymentIntent = await stripe.paymentIntents.retrieve(
+      session.payment_intent
+    );
+    paymentMethodId = paymentIntent.payment_method;
+    // const paymentMethod = await stripe.paymentMethods.retrieve(paymentMethodId);
 
     const response = await new Promise((resolve, reject) => {
       PaymentClient.PaymentCancel({ orderId, paymentId }, (error, response) => {

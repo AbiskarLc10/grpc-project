@@ -33,7 +33,9 @@ const AuthInteceptor = (methodDescriptor, call) => {
     .withOnReceiveMetadata((metadata, next) => {
       if (
         call.handler.path === "/customer.CustomerService/SignUpCustomer" ||
-        call.handler.path === "/customer.CustomerService/SignInCustomer"
+        call.handler.path === "/customer.CustomerService/SignInCustomer" ||
+        call.handler.path === "/payment.PaymentService/PaymentSuccess" ||
+        call.handler.path === "/payment.PaymentService/PaymentCancel"
       ) {
         return next(metadata);
       } else {

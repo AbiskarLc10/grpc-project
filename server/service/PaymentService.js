@@ -50,7 +50,7 @@ class PaymentService {
           console.log(
             `Payment status for order ${orderId} updated to Pending.`
           );
-        } else {
+        } else if (payment.paymentStatus === "Completed") {
           return callback({
             details: "Payment already initiated or in a different state",
             code: grpc.status.ALREADY_EXISTS,
@@ -106,7 +106,8 @@ class PaymentService {
   };
 
   PaymentSuccess = async (call, callback) => {
-    const { orderId, paymentId } = call.request;
+    const { orderId, paymentId, paymentMethodId, paymentIntendId } =
+      call.request;
     const paymentTransaction = await sequelize.transaction();
     try {
       if (!orderId || !paymentId) {
@@ -149,8 +150,13 @@ class PaymentService {
         await Payment.update(
           {
             paymentStatus: "Completed",
+            paymentIntendId,
+            paymentMethodId,
           },
           {
+            where: {
+              id: paymentId,
+            },
             transaction: paymentTransaction,
           }
         );
@@ -160,6 +166,9 @@ class PaymentService {
             orderStatus: "DELIVERED",
           },
           {
+            where: {
+              id: orderId,
+            },
             transaction: paymentTransaction,
           }
         );
