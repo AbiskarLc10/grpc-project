@@ -35,7 +35,7 @@ class PaymentService {
       }
       if (orderDetails.orderStatus === "DELIVERED") {
         return callback({
-          details: "You order has already delivered",
+          details: "You order was already delivered",
           code: grpc.status.ALREADY_EXISTS,
         });
       }

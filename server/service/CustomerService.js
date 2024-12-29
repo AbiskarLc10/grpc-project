@@ -26,7 +26,7 @@ class CustomerService {
         }
       );
 
-      if (checkUserExists.length === 1) {
+      if (checkUserExists && checkUserExists.length === 1) {
         return callback({
           details: "Customer with this email already exists",
           code: grpc.status.ALREADY_EXISTS,

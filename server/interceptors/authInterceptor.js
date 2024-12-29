@@ -12,7 +12,6 @@ const validateMetaData = (tokenData, call) => {
     });
   }
 
-  console.log(process.env.PRIVATE_KEY);
 
   return jwt.verify(token, process.env.PRIVATE_KEY, (error, data) => {
     if (error) {
