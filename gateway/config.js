@@ -1,4 +1,6 @@
-const HOST_URL = "localhost:50051";
+require("dotenv").config();
+const AUTHOR_HOST_URL = process.env.AUTHOR_HOST_URL;
+const CUSTOMER_HOST_URL = process.env.CUSTOMER_HOST_URL;
 const BOOK_PROTO_PATH = "../proto/book.proto";
 const AUTHOR_PROTO_PATH = "../proto/author.proto";
 const REVIEW_PROTO_PATH = "../proto/review.proto";
@@ -13,7 +15,8 @@ const PROTO_LOADER_OPTION = {
 };
 
 module.exports = {
-  HOST_URL,
+  AUTHOR_HOST_URL,
+  CUSTOMER_HOST_URL,
   CUSTOMER_PROTO_PATH,
   BOOK_PROTO_PATH,
   PROTO_LOADER_OPTION,

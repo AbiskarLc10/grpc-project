@@ -1,7 +1,7 @@
 const grpc = require("@grpc/grpc-js");
 const protoloader = require("@grpc/proto-loader");
 const path = require("path");
-const { CUSTOMER_PROTO_PATH, PROTO_LOADER_OPTION } = require("../config");
+const { CUSTOMER_PROTO_PATH, PROTO_LOADER_OPTION,CUSTOMER_HOST_URL } = require("../config");
 
 const customerProtoPath = path.resolve(CUSTOMER_PROTO_PATH);
 
@@ -25,7 +25,7 @@ const jwtInterceptor = (options, nextCall) => {
 const CustomerService = customerProto.customer.CustomerService;
 
 const CustomerClient = new CustomerService(
-  "localhost:50052",
+  CUSTOMER_HOST_URL,
   grpc.credentials.createInsecure(),
   {
     interceptors: [jwtInterceptor],

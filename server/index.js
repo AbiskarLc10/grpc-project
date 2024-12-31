@@ -5,7 +5,7 @@ const path = require("path");
 //Config data for grpc server and package setup
 const {
   BOOK_PROTO_PATH,
-  HOST_URL,
+  AUTHOR_HOST_URL,
   PROTO_LOADER_OPTION,
   AUTHOR_PROTO_PATH,
   REVIEW_PROTO_PATH,
@@ -13,6 +13,9 @@ const {
   CUSTOMER_HOST_URL,
   PAYMENT_PROTO_PATH,
 } = require("./config");
+
+console.log(AUTHOR_HOST_URL);
+console.log(CUSTOMER_HOST_URL);
 
 //Classes for rpc method implementation of BookService, AuthorService and ReviewService
 const BookService = require("./service/BookService");
@@ -77,14 +80,14 @@ sequelize
     // await sequelize.sync({alter:true});
     console.log("Connected to database Successfully");
     server.bindAsync(
-      HOST_URL,
+      AUTHOR_HOST_URL,
       grpc.ServerCredentials.createInsecure(),
       (error, port) => {
         if (error) {
           console.log(error);
           console.log(`Failed to create grpc server =>  `, error.message);
         } else {
-          console.log(`Grpc Server Listening at port ${port}`);
+          console.log(`Author Server Listening at port ${port}`);
         }
       }
     );

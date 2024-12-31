@@ -1,7 +1,11 @@
 const grpc = require("@grpc/grpc-js");
 const protoloader = require("@grpc/proto-loader");
 const path = require("path");
-const { PAYMENT_PROTO_PATH, PROTO_LOADER_OPTION } = require("../config");
+const {
+  PAYMENT_PROTO_PATH,
+  PROTO_LOADER_OPTION,
+  CUSTOMER_HOST_URL,
+} = require("../config");
 
 const paymentProtoPath = path.resolve(PAYMENT_PROTO_PATH);
 
@@ -24,10 +28,9 @@ const paymentProto = grpc.loadPackageDefinition(paymentPackageDefinations);
 
 const PaymentService = paymentProto.payment.PaymentService;
 
-
-console.log(PaymentService)
+console.log(PaymentService);
 const PaymentClient = new PaymentService(
-  "localhost:50052",
+  CUSTOMER_HOST_URL,
   grpc.credentials.createInsecure(),
   {
     interceptors: [jwtInterceptor],

@@ -67,7 +67,8 @@ DB_PASSWORD = "password"
 DB_NAME = "test"
 DB_HOST = "db"
 PRIVATE_KEY = "jwt private key as per your choice"
-CUSTOMER_HOST_URL = "localhost:50051"
+CUSTOMER_HOST_URL = "localhost:50052"
+AUTHOR_HOST_URL = "localhost:50051"
 
 ```
 
