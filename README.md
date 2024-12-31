@@ -78,10 +78,10 @@ To install all dependencies
 cd server && npm install
 ```
 
-To setup database schema through migration 
+To setup database schema through migration
 
 ```sh
- 
+
 npx sequelize-cli db:migrate
 
 ```
@@ -106,6 +106,8 @@ Create a configuration file named .env inside the `gateway` folder.Initialize th
 PRIVATE_KEY = "jwt private key as per your choice"
 STRIPE_PAYMENT_SECRET_KEY = "create stripe account and a project to get the stripe payment secret"
 BASE_URL = http://localhost:8000
+CUSTOMER_HOST_URL = "localhost:50052"
+AUTHOR_HOST_URL = "localhost:50051"
 
 ```
 
@@ -194,14 +196,16 @@ Example:
 - **PATCH** `/api/books/update/:bookId/:authorId` (Update a book)
 
 Example: Include only the fields to update
+
 ```json
 {
-    // "bookName":"The Hidden Mysteryyyy121212121",
-    // "genre":"fantasy",
-    // "published_date":"2021/08/12"
-    "price":68.45
+  // "bookName":"The Hidden Mysteryyyy121212121",
+  // "genre":"fantasy",
+  // "published_date":"2021/08/12"
+  "price": 68.45
 }
 ```
+
 - **DELETE** `/api/books/delete/:bookId/:authorId` (Delete a book)
 
 - **GETROUTES** : Take the reference of `gateway/route/book-route` for remaining get endpoints
@@ -214,16 +218,18 @@ Example:
 
 ```json
 {
-    "description":"I found the book quite interesting, this is my second review",
-    "ratings":5
+  "description": "I found the book quite interesting, this is my second review",
+  "ratings": 5
 }
 ```
+
 - **PATCH** `/api/review/edit-book-review/:bookId/:reviewId` (To update book review)
 
-Example: 
+Example:
+
 ```json
 {
-  "description":"",
+  "description": "",
   "ratings": ""
 }
 ```
@@ -231,7 +237,6 @@ Example:
 - **DELETE** `/api/review/delete-review/:bookId/:reviewId` (Delete review)
 
 - **GET** `/api/review/get-reviews/:bookId` (Get all the reviews on a book)
-
 
 ## Customer endpoints
 
@@ -243,11 +248,11 @@ Example:
 
 ```json
 {
-    "fullName": "John Starc",
-    "email": "john10@gmail.com",
-    "password": "John@123",
-    "address": "NY-20",
-    "dateOfBirth": "2004/09/19"
+  "fullName": "John Starc",
+  "email": "john10@gmail.com",
+  "password": "John@123",
+  "address": "NY-20",
+  "dateOfBirth": "2004/09/19"
 }
 ```
 
@@ -257,18 +262,18 @@ Example:
 
 ```json
 {
-    "email": "john10@gmail.com",
-    "password": "John@123",
+  "email": "john10@gmail.com",
+  "password": "John@123"
 }
 ```
 
 - **POST** `/api/customer/order-book/:bookId` (Order your favourite book)
 
-Example: 
+Example:
 
 ```json
 {
-    "quantity":2
+  "quantity": 2
 }
 ```
 
