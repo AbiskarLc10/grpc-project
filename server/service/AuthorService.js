@@ -267,4 +267,4 @@ class AuthorService {
   };
 }
 
-module.exports = AuthorService;
+// module.exports = AuthorService;

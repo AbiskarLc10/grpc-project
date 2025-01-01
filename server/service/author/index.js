@@ -4,10 +4,14 @@ const SignIn = require("./signin-author");
 const SignUp = require("./signup-author");
 const UpdateProfile = require("./updateprofile-author");
 
-module.exports = {
-  DeleteProfile,
-  SignIn,
-  SignUp,
-  GetAuthorById,
-  UpdateProfile,
-};
+class AuthorService {
+  constructor() {}
+}
+
+AuthorService.prototype.SignUp = SignUp;
+AuthorService.prototype.SignIn = SignIn;
+AuthorService.prototype.GetAuthorById = GetAuthorById;
+AuthorService.prototype.UpdateProfile = UpdateProfile;
+AuthorService.prototype.DeleteProfile = DeleteProfile;
+
+module.exports = AuthorService;
