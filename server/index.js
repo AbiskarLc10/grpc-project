@@ -13,10 +13,6 @@ const {
   CUSTOMER_HOST_URL,
   PAYMENT_PROTO_PATH,
 } = require("./config");
-
-console.log(AUTHOR_HOST_URL);
-console.log(CUSTOMER_HOST_URL);
-
 //Classes for rpc method implementation of BookService, AuthorService and ReviewService
 const BookService = require("./service/BookService");
 const AuthorService = require("./service/AuthorService");
@@ -27,6 +23,13 @@ const PaymentService = require("./service/PaymentService");
 //Conection variable
 const sequelize = require("./db/connection");
 const AuthInteceptor = require("./interceptors/authInterceptor");
+const {
+  SignUp,
+  SignIn,
+  DeleteProfile,
+  UpdateProfile,
+  GetAuthorById,
+} = require("./service/author");
 
 //Protofile paths
 const bookProtoPath = path.resolve(BOOK_PROTO_PATH);
@@ -67,7 +70,13 @@ const customerServer = new grpc.Server({
 
 //Adding services to the server
 server.addService(bookService, new BookService());
-server.addService(authorService, new AuthorService());
+server.addService(authorService, {
+  SignUp,
+  SignIn,
+  DeleteProfile,
+  UpdateProfile,
+  GetAuthorById,
+});
 server.addService(reviewService, new ReviewService());
 
 //adding service to customer server

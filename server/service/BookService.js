@@ -43,7 +43,7 @@ class BookService {
         published_date: new Date(published_date).toISOString(),
         authorId: authorId,
         price,
-        stock
+        stock,
       });
 
       if (!newBook) {
@@ -119,6 +119,7 @@ class BookService {
   };
 
   DeleteBook = async (call, callback) => {
+    const transaction = await sequelize.transaction();
     try {
       const { bookId } = call.request;
 
@@ -139,21 +140,27 @@ class BookService {
         });
       }
 
-      const deletedBook = await Book.destroy({
-        where: {
-          id: bookId,
-        },
-      });
+      const [deletedBook, _] = await sequelize.query(
+        "DELETE FROM books WHERE id= :bookId",
+        {
+          replacements: {
+            bookId: bookToBeDeleted.id,
+          },
+          transaction: transaction,
+        }
+      );
 
-      if (!deletedBook) {
+      if (deletedBook.affectedRows === 0) {
         return callback({
-          details: "Something went wrong",
+          details: "Failed to delete book",
           code: grpc.status.FAILED_PRECONDITION,
         });
       }
 
+      await transaction.commit();
       return callback(null, { success: true });
     } catch (error) {
+      await transaction.rollback();
       return callback({
         details: "Failed to  delete book",
         code: grpc.status.INTERNAL,

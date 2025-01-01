@@ -77,7 +77,7 @@ class ReviewService {
         bookName: checkBookExists.bookName,
         description: description,
         ratings: ratings,
-        reviewerType
+        reviewerType,
       });
     } catch (error) {
       console.error(error);
@@ -176,7 +176,7 @@ class ReviewService {
 
       const [__, updateBookResult] = await sequelize.query(
         `UPDATE reviews SET ${
-          call.request.description ? "description = :description" : ""
+          call.request.description ? "description = :description," : ""
         }${
           call.request.ratings ? "ratings= :ratings" : ""
         }, updatedAt = NOW() WHERE id = :reviewId AND reviewerId = :reviewerId AND bookId = :bookId`,
@@ -222,28 +222,33 @@ class ReviewService {
       //   }
       // );
 
-      // const bookReviews = await sequelize.query(
-      //   "CALL GetAllBookReviews(:bookId)",
-      //   {
-      //     replacements: {
-      //       bookId: bookId,
-      //     },
-      //   }
-      // );
-      const bookReviews = await Review.findAll({
-        where: {
-          bookId: bookId,
-        },
-        include: [
-          {
-            model: Book,
-            attributes: ["bookName"],
-            as: "book",
+      const bookReviews = await sequelize.query(
+        "CALL GetAllBookReviews(:bookId)",
+        {
+          replacements: {
+            bookId: bookId,
           },
-        ],
-      });
+        }
+      );
+      // const bookReviews = await Review.findAll({
+      //   where: {
+      //     bookId: bookId,
+      //   },
+      //   include: [
+      //     {
+      //       model: Book,
+      //       attributes: ["bookName"],
+      //       as: "book",
+      //     },
+      //   ],
+      // });
 
-      console.log(bookReviews);
+      if (bookReviews.length === 0) {
+        return callback({
+          details: "No reviews found for the book",
+          code: grpc.status.NOT_FOUND,
+        });
+      }
 
       return callback(null, {
         reviews: bookReviews,

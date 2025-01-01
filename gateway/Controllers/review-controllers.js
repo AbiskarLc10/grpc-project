@@ -101,12 +101,12 @@ const editBookReview = async (req, res, next) => {
   try {
     const { bookId, reviewId } = req.params;
     const { id } = req.user;
-    const { description } = req.body;
-    validate({ description }, reviewSchema);
+    const { description,ratings } = req.body;
+    validate({ description, ratings }, reviewSchema);
 
     const response = await new Promise((resolve, reject) => {
       ReviewClient.EditBookReview(
-        { bookId, reviewId, reviewerId: id, description },
+        { bookId, reviewId, reviewerId: id, description, ratings},
         (error, response) => {
           if (error) {
             console.log(error);
@@ -159,10 +159,13 @@ const getBookReviewsById = async (req, res, next) => {
     });
   } catch (error) {
     console.log(error);
-    return customErrorHandler({
-      details: error.details || error.message,
-      code: error.code,
-    });
+    return customErrorHandler(
+      {
+        details: error.details || error.message,
+        code: error.code,
+      },
+      next
+    );
   }
 };
 
