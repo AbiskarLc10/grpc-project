@@ -14,14 +14,13 @@ const {
   PAYMENT_PROTO_PATH,
 } = require("./config");
 
-
 //Classes for rpc method implementation of BookService, AuthorService and ReviewService
 const BookService = require("./service/book");
 const AuthorService = require("./service/author/index");
 
-const ReviewService = require("./service/bookreview");
-const CustomerService = require("./service/CustomerService");
-const PaymentService = require("./service/PaymentService");
+const ReviewService = require("./service/bookreview/index");
+const CustomerService = require("./service/customer/index");
+const PaymentService = require("./service/payment/index");
 
 //Conection variable
 const sequelize = require("./db/connection");
