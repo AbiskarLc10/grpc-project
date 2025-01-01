@@ -15,6 +15,8 @@ message Payment{
      string orderId = 2;
      double totalAmount = 3;
      PaymentStatus paymentStatus = 4;
+     string paymentIntendId = 5;
+     string paymentMethodId = 6;
 }
 
 
@@ -53,6 +55,17 @@ message PaymentCancelResponse {
 }
 
 
+message GetPaymentDetailsByIdRequest {
+   string paymentId = 1;
+}
+
+message GetPaymentDetailsByIdResponse {
+    map<string,Payment> payment = 1;
+    string bookName = 2;
+    string customerName = 3;
+    string paymentMethod = 4;
+}
+
 
 
 service PaymentService {
@@ -60,6 +73,7 @@ service PaymentService {
     rpc InitiateOrderPayment(InitiateOrderPaymentRequest) returns (InitiateOrderPaymentResponse) {};
     rpc PaymentSuccess(PaymentSuccessRequest) returns (PaymentSuccessResponse) {};
     rpc PaymentCancel (PaymentCancelRequest) returns (PaymentCancelResponse) {};
+    rpc GetPaymentDetailsById (GetPaymentDetailsByIdRequest) returns (GetPaymentDetailsByIdResponse) {};
 }
 
 

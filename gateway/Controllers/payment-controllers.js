@@ -171,4 +171,54 @@ const paymentCancel = async (req, res, next) => {
   }
 };
 
-module.exports = { paymentCancel, initiateOrderPayment, paymentSuccess };
+const getPaymentDetails = async (req, res, next) => {
+  const token = req.headers.authorization;
+  const { paymentId } = req.params;
+  try {
+    if (!token) {
+      return customErrorHandler(
+        {
+          details: "Token not found.Please login!",
+          code: 401,
+        },
+        next
+      );
+    }
+    const metadata = new grpc.Metadata();
+    metadata.add("token", token);
+
+    const response = await new Promise((resolve, reject) => {
+      PaymentClient.GetPaymentDetailsById(
+        { paymentId },
+        metadata,
+        (error, response) => {
+          if (error) {
+            reject({
+              details: error.details,
+              code: error.code,
+            });
+          }
+          resolve(response);
+        }
+      );
+    });
+
+    return res.status(200).json(response);
+  } catch (error) {
+    console.log(error);
+    customErrorHandler(
+      {
+        details: error.details || error.message,
+        code: error.code || 500,
+      },
+      next
+    );
+  }
+};
+
+module.exports = {
+  paymentCancel,
+  getPaymentDetails,
+  initiateOrderPayment,
+  paymentSuccess,
+};
