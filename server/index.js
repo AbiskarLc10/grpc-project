@@ -19,7 +19,7 @@ const {
 const BookService = require("./service/book");
 const AuthorService = require("./service/author/index");
 
-const ReviewService = require("./service/ReviewService");
+const ReviewService = require("./service/bookreview");
 const CustomerService = require("./service/CustomerService");
 const PaymentService = require("./service/PaymentService");
 

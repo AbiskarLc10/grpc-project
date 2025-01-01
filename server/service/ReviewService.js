@@ -1,6 +1,8 @@
 const grpc = require("@grpc/grpc-js");
 const { Review, Book } = require("../db/models/index.js");
 const sequelize = require("../db/connection.js");
+
+
 class ReviewService {
   AddBookReview = async (call, callback) => {
     const transaction = await sequelize.transaction();
@@ -263,4 +265,4 @@ class ReviewService {
   };
 }
 
-module.exports = ReviewService;
+// module.exports = ReviewService;
