@@ -7,6 +7,7 @@ const AddBook = async (call, callback) => {
       const { bookName, published_date, genre, authorId, price, stock } =
         call.request;
 
+        
       if (!authorId || !bookName || !published_date || !genre || !price) {
         return callback({
           details: "Please provide all book details",

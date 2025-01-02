@@ -6,6 +6,7 @@ const {
   dateTimeSchema,
   addBookSchema,
 } = require("../utils/validationSchema");
+const grpc = require("@grpc/grpc-js");
 
 const getAllBooks = async (req, res, next) => {
   try {
@@ -126,6 +127,8 @@ const addBook = async (req, res, next) => {
     let { bookName, genre, published_date, price } = req.body;
     const { id, isAuthor } = req.user;
 
+    const metadata = new grpc.Metadata();
+    metadata.add("user", { id, isAuthor });
     if (!isAuthor) {
       return res.status(401).json({
         message: "Action denied for user access",
@@ -136,7 +139,14 @@ const addBook = async (req, res, next) => {
 
     const response = await new Promise((resolve, reject) => {
       bookClient.AddBook(
-        { bookName, genre, authorId: id, published_date, price },
+        {
+          bookName,
+          genre: genre.toUpperCase(),
+          authorId: id,
+          published_date,
+          price,
+        },
+        metadata,
         (error, response) => {
           if (error) {
             console.log(error);
@@ -349,18 +359,18 @@ const getBooksByPage = async (req, res, next) => {
 
 const getAllData = async (req, res, next) => {
   try {
-    res.setHeader('Content-Type', 'text/event-stream');  
-    res.setHeader('Cache-Control', 'no-cache');
-    res.setHeader('Connection', 'keep-alive');
+    res.setHeader("Content-Type", "text/event-stream");
+    res.setHeader("Cache-Control", "no-cache");
+    res.setHeader("Connection", "keep-alive");
 
     const call = bookClient.GetStreamData({});
 
     call.on("data", (data) => {
-      res.write(`data: ${JSON.stringify(data)}\n\n`); 
+      res.write(`data: ${JSON.stringify(data)}\n\n`);
     });
 
     call.on("end", () => {
-      res.write('event: end\n'); 
+      res.write("event: end\n");
       res.end();
     });
   } catch (error) {
@@ -374,7 +384,6 @@ const getAllData = async (req, res, next) => {
     );
   }
 };
-
 
 module.exports = {
   getAllBooks,

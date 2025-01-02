@@ -6,9 +6,9 @@ const { QueryTypes } = require("sequelize");
 
 const SignUp = async (call, callback) => {
   try {
-    const { name, email, password, address, date_of_birth } = call.request;
+    const { name, email, password, genre, date_of_birth } = call.request;
 
-    if (!name || !email || !password || !address || !date_of_birth) {
+    if (!name || !email || !password || !genre || !date_of_birth) {
       return callback({
         details: "Please provide all fields",
         code: grpc.status.INVALID_ARGUMENT,
