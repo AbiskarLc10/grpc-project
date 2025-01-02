@@ -279,4 +279,6 @@ Example:
 
 - **DELETE** `/api/customer/cancel-order/:orderId` (Cancel the order)
 
-- **GET** `/api/customer/order-payment/initiate/:orderId` (Initiate payment)
+- **GET** `/api/payment/order-payment/initiate/:orderId` (Initiate payment)
+
+- **GET** `/api/payment/get-payment-details/:paymentId` (Get the payment details)

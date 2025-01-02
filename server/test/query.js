@@ -52,65 +52,103 @@
 //   }) })()
 // // getData(2,2);
 
-class UserData {
-  static USER1 = new UserData("Abiskar");
+// class UserData {
+//   static USER1 = new UserData("Abiskar");
 
-  constructor(name) {
-    this.name = name;
-  }
+//   constructor(name) {
+//     this.name = name;
+//   }
 
-  toString() {
-    return `UserData.${this.name}`;
-  }
-}
+//   toString() {
+//     return `UserData.${this.name}`;
+//   }
+// }
 
-console.log(UserData.USER1);
+// console.log(UserData.USER1);
 
-class ValidationErrorCodes {
-  static REQUIRED_FIELD = new ValidationErrorCodes("REQUIRED_FIELD");
-  static INVALID_TYPE = new ValidationErrorCodes("INVALID_TYPE");
+// class ValidationErrorCodes {
+//   static REQUIRED_FIELD = new ValidationErrorCodes("REQUIRED_FIELD");
+//   static INVALID_TYPE = new ValidationErrorCodes("INVALID_TYPE");
 
-  constructor(name) {
-    this.name = name;
-  }
+//   constructor(name) {
+//     this.name = name;
+//   }
 
-  toString() {
-    return `ValidationError.${this.name}`;
-  }
-}
+//   toString() {
+//     return `ValidationError.${this.name}`;
+//   }
+// }
 
-class ValidationError extends Error {
-  constructor(code, details = "") {
-    super();
-    this.code = code;
-    this.details = details;
+// class ValidationError extends Error {
+//   constructor(code, details = "") {
+//     super();
+//     this.code = code;
+//     this.details = details;
 
-    switch (code) {
-      case ValidationErrorCodes.REQUIRED_FIELD:
-        this.message = `Missing required field: ${details}`;
-        break;
-      case ValidationErrorCodes.INVALID_TYPE:
-        this.message = `Invalid type for field: ${details}`;
-        break;
-      default:
-        this.message = "Unknown validation error";
-        break;
+//     switch (code) {
+//       case ValidationErrorCodes.REQUIRED_FIELD:
+//         this.message = `Missing required field: ${details}`;
+//         break;
+//       case ValidationErrorCodes.INVALID_TYPE:
+//         this.message = `Invalid type for field: ${details}`;
+//         break;
+//       default:
+//         this.message = "Unknown validation error";
+//         break;
+//     }
+//   }
+// }
+
+
+// const testFunc = async () => {
+//   try {
+//     throw new DatabaseError(DatabaseErrorCodes.INSERT);
+//   } catch (error) {
+//     if (error instanceof DatabaseError) {
+//       console.log(error.message);
+//     }
+//   }
+// };
+
+// testFunc();
+
+const updateTest = (updateAbleFields) =>{
+
+  // const fieldsToUpdate = Object.keys(values)
+  
+  // const setClause = fieldsToUpdate.map((field)=>{
+  //   if(!values[field]){
+  //     return ""
+  //   }else{
+  //     return `${field}= :${field}`
+  //   }
+  // }).join(", ")
+
+  
+  // console.log(setClause)
+
+    
+  // const updateAbleFields = {
+  //   description,
+  //   ratings
+  // }
+
+  let fieldToUpdate = Object.keys(updateAbleFields);
+  
+  console.log(fieldToUpdate)
+  let setClause = fieldToUpdate.map((field)=>{
+
+    console.log(field)
+    if(!updateAbleFields[field]){
+      return ""
+    }else{
+      return `${field}= :${field}`
     }
-  }
+  }).join(", ")
+
+  console.log(`UPDATE reviews SET ${setClause} updatedAt = NOW() WHERE id = :reviewId AND reviewerId = :reviewerId AND bookId = :bookId`)
 }
 
-
-const testFunc = async () => {
-  try {
-    throw new DatabaseError(DatabaseErrorCodes.INSERT);
-  } catch (error) {
-    if (error instanceof DatabaseError) {
-      console.log(error.message);
-    }
-  }
-};
-
-testFunc();
-
-
+// updateTest({name:"dadad",age:20,salary:0})
+updateTest({description:"dnjadn",ratings:0})
 
