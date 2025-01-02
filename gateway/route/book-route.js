@@ -8,6 +8,7 @@ const {
   updateBook,
   getBookByDate,
   getBooksByPage,
+  getAllData,
 } = require("../Controllers/book-controller");
 const verifyUser = require("../middleware/verifyUser");
 const router = express.Router();
@@ -20,5 +21,6 @@ router.route("/update/:bookId/:authorId").patch(verifyUser,updateBook);
 router.route("/getbook/:bookId").get(getBookById);
 router.route("/get-books-by-date").get(getBookByDate);
 router.route("/getbooks/:pageNo").get(getBooksByPage);
+router.route("/get-data").get(getAllData)
 
 module.exports = router;

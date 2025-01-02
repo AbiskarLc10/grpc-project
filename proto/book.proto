@@ -69,6 +69,10 @@ message GetBooksPerPageRequest {
 message GetBooksPerPageResponse {
     repeated Book books = 1;
 }
+
+message GetStreamDataRequest {
+
+}
 service BookService {
     rpc AddBook (AddBookRequest) returns (AddBookResponse){};
     rpc DeleteBook (DeleteBookRequest) returns (DeleteBookResponse) {};
@@ -78,4 +82,5 @@ service BookService {
     rpc UpdateBook (UpdateBookRequest) returns (UpdateBookResponse) {};
     rpc GetBookByDate (GetBookByDateRequest) returns (GetBookByDateResponse){};
     rpc GetBooksPerPage (GetBooksPerPageRequest) returns (GetBooksPerPageResponse){};
+    rpc GetStreamData(GetStreamDataRequest) returns (stream GetBookByIdResponse) {};
 } 

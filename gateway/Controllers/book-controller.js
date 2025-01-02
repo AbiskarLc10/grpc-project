@@ -347,6 +347,35 @@ const getBooksByPage = async (req, res, next) => {
   }
 };
 
+const getAllData = async (req, res, next) => {
+  try {
+    res.setHeader('Content-Type', 'text/event-stream');  
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+
+    const call = bookClient.GetStreamData({});
+
+    call.on("data", (data) => {
+      res.write(`data: ${JSON.stringify(data)}\n\n`); 
+    });
+
+    call.on("end", () => {
+      res.write('event: end\n'); 
+      res.end();
+    });
+  } catch (error) {
+    console.log(error);
+    return customErrorHandler(
+      {
+        details: "Failed to get data",
+        code: 500,
+      },
+      next
+    );
+  }
+};
+
+
 module.exports = {
   getAllBooks,
   addBook,
@@ -356,4 +385,5 @@ module.exports = {
   getBookById,
   getBookByDate,
   getBooksByPage,
+  getAllData,
 };
