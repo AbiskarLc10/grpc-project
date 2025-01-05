@@ -7,12 +7,29 @@ const swaggerDefinition = {
     version: "1.0.0",
     description: "My API Description",
   },
-  // servers: [
-  //   {
-  //     url: "https://api.example.com/v1",
-  //     description: "Auth server",
-  //   },
-  // ],
+  servers: [
+    {
+      url: "http://localhost:8000",
+      description: "Book Store",
+    },
+  ],
+  components: {
+    securitySchemes: {
+      bearerAuth: {
+        type: "http",
+        scheme: "bearer",
+        bearerFormat: "JWT",
+      },
+    },
+    responses: {
+      UnauthorizedError: {
+        description: "Access token is missing or invalid",
+      },
+      ForbiddenError: {
+        description: "You dont have permission to access this resource",
+      },
+    },
+  },
 };
 
 const options = {

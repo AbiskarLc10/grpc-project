@@ -4,16 +4,19 @@ const {
   SignInAuthor,
 } = require("../Controllers/auth-controllers");
 const router = express.Router();
-
+  /**
+    * @swagger
+    * tags:
+    *   name: Author-Authorization
+    *   description: Api endpoints for authorization
+    */
 /**
  * @swagger
  * /api/auth/sign-up:
  *   post:
+ *     tags: [Author-Authorization]
  *     summary: Sign up author
  *     description: Sign up a new author
- *     servers:
- *       - url: https://auth.example.com/v1
- *         description: Auth Server
  *     requestBody:
  *       required: true
  *       content:
@@ -44,6 +47,7 @@ router.route("/sign-up").post(SignUpAuthor);
  * @swagger
  * /api/auth/sign-in:
  *   post:
+ *     tags: [Author-Authorization]
  *     summary: Sign in author
  *     description: This route allows you to receive a token for valid credentials and perform all the author actions.
  *     servers:
@@ -66,7 +70,7 @@ router.route("/sign-up").post(SignUpAuthor);
  *       400:
  *         description: Invalid input or missing fields.
  *       401:
- *         description: Invalid credentials.
+ *         $ref: "#/components/responses/UnauthorizedError"
  */
 router.route("/sign-in").post(SignInAuthor);
 
