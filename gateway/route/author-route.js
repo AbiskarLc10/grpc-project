@@ -117,13 +117,8 @@ router.route("/sign-out/:authorId").delete(verifyUser, SignOutAuthor);
  *         name: authorId
  *         description: Id of the author whose details are to be fetched
  *         type: string
- *       - in: header
- *         name: Authorization
- *         required: true
- *         description: Bearer token for authorization
  *         schema:
  *           type: string
- *           example: "Bearer <token-from-signin>"
  *     responses:
  *       200:
  *         description: Author details fetched successfully

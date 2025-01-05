@@ -50,9 +50,6 @@ router.route("/sign-up").post(SignUpAuthor);
  *     tags: [Author-Authorization]
  *     summary: Sign in author
  *     description: This route allows you to receive a token for valid credentials and perform all the author actions.
- *     servers:
- *       - url: https://auth.example.com/v1
- *         description: Auth Server
  *     requestBody:
  *       required: true
  *       content:

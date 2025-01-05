@@ -114,12 +114,15 @@ const SignOutAuthor = async (req, res, next) => {
 const getAuthorById = async (req, res, next) => {
   try {
     const { authorId } = req.params;
-    const {id} = req.user;
-    if(authorId!==id){
-      return customErrorHandler({
-        details:"Unauthorized Access, action not allowed",
-        code: 403
-      })
+    const { id } = req.user;
+    if (authorId !== id) {
+      return customErrorHandler(
+        {
+          details: "Unauthorized Access, action not allowed",
+          code: 403,
+        },
+        next
+      );
     }
     const response = await new Promise((resolve, reject) => {
       AuthorClient.GetAuthorById({ authorId }, (error, response) => {
@@ -133,8 +136,14 @@ const getAuthorById = async (req, res, next) => {
         resolve(response);
       });
     });
-    
-    return res.status(201).json({message:"User Fetched Successfully",...response,success:true});
+
+    return res
+      .status(201)
+      .json({
+        message: "User Fetched Successfully",
+        ...response,
+        success: true,
+      });
   } catch (error) {
     console.log(error);
     return customErrorHandler(

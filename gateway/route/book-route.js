@@ -22,7 +22,7 @@ const router = express.Router();
 
 /**
  * @swagger
- * /api/book/get-all-books:
+ * /api/books/get-all-books:
  *   get:
  *     tags: [Book-Routes]
  *     summary: Get all book details
@@ -36,7 +36,7 @@ router.route("/get-all-books").get(getAllBooks);
 
 /**
  * @swagger
- * /api/book/getbooks?author=authorName:
+ * /api/books/getbooks?author=authorName:
  *   get:
  *     tags: [Book-Routes]
  *     summary: Get the books by name of author
@@ -57,7 +57,7 @@ router.route("/getbooks").get(getbooksByAuthor);
 
 /**
  * @swagger
- * /api/book/add:
+ * /api/books/add:
  *   tags: [Book-Routes]
  *   summary: Add a book
  *   security:
@@ -104,7 +104,7 @@ router.route("/add").post(verifyUser, addBook);
 
 /**
  * @swagger
- * /api/book/{bookId}/{authorId}:
+ * /api/books/{bookId}/{authorId}:
  *   delete:
  *     tags: [Book-Routes]
  *     summary: Delete a book
