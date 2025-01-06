@@ -219,8 +219,9 @@ const deleteBookById = async (req, res, next) => {
 
 const getBookByDate = async (req, res, next) => {
   try {
-    let from = new Date(req.body.from);
-    let to = req.body.to || new Date();
+   
+    let from = new Date(req.query.from);
+    let to = req.query.to || new Date();
 
     validate({ from, to }, dateTimeSchema);
 

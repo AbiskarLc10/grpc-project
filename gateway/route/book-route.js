@@ -127,11 +127,117 @@ router.route("/add").post(verifyUser, addBook);
  *       500:
  *         description: Internal server error
  */
-
 router.route("/delete/:bookId/:authorId").delete(verifyUser, deleteBookById);
+
+/**
+ * @swagger
+ * /api/book/update/{bookId}/{authorId}:
+ *   patch:
+ *     tags: [Book-Routes]
+ *     summary: Update the book details
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: bookId
+ *         required: true
+ *         description: Id of the book to be updated
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: authorId
+ *         required: true
+ *         description: Id of the author who added the book
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               bookName:
+ *                 type: string
+ *               genre:
+ *                 type: string
+ *                 enum:
+ *                   - FANTASY
+ *                   - CLASSICS
+ *                   - DYSTOPIAN
+ *                   - HISTORICAL_FICTION
+ *                   - MYSTERY
+ *                   - CONTEMPORARY_FICTION
+ *                   - ADVENTURE
+ *                   - FICTION
+ *               published_date:
+ *                 type: string
+ *                 format: date
+ *               price:
+ *                 type: number
+ *     responses:
+ *       200:
+ *         description: Successfully updated book details
+ *       401:
+ *         $ref: "#/components/responses/UnauthorizedError"
+ *       403:
+ *         $ref: "#/components/responses/ForbiddenError"
+ *       500:
+ *         $ref: "#/components/responses/ServerError"
+ */
 router.route("/update/:bookId/:authorId").patch(verifyUser, updateBook);
+
+/**
+ * @swagger
+ * /api/book/getbook/{bookId}:
+ *   get:
+ *     tags: [Book-Routes]
+ *     summary: Get Book details by unique book Id
+ *     parameters:
+ *       - in: path
+ *         name: bookId
+ *         required: true
+ *         description: Id of the book
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Book details fetched successfully
+ *       500:
+ *         description: Internal server error
+ */
 router.route("/getbook/:bookId").get(getBookById);
+
+/**
+ * @swagger
+ * /api/book/get-books-by-date:
+ *   get:
+ *     tags: [Book-Routes]
+ *     summary: Get the book posted between certain dates
+ *     parameters:
+ *       - in: query
+ *         name: from
+ *         required: true
+ *         description: from a date when book was added
+ *         schema:
+ *           type: string
+ *           format: date
+ *       - in: query
+ *         name: to
+ *         description: to a date before when book was added
+ *         schema:
+ *           type: string
+ *           format: date
+ *     responses:
+ *       200:
+ *         description: Book fetched successfully
+ *       404:
+ *         $ref: "#/components/responses/NotFound"
+ *       500:
+ *         description: Internal server error
+ */
 router.route("/get-books-by-date").get(getBookByDate);
+
 router.route("/getbooks/:pageNo").get(getBooksByPage);
 router.route("/get-data").get(getAllData);
 

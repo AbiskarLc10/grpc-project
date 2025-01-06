@@ -28,6 +28,9 @@ const swaggerDefinition = {
       ForbiddenError: {
         description: "You dont have permission to access this resource",
       },
+      NotFound:{
+        description: "Resource not found"
+      }
     },
   },
 };
