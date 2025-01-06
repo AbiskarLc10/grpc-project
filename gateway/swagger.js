@@ -5,7 +5,7 @@ const swaggerDefinition = {
   info: {
     title: "Book Store",
     version: "1.0.0",
-    description: "My API Description",
+    description: "Book Store is an API based on microservice architecture that allows authors to post their books and customers to review, rate, and purchase the books.",
   },
   servers: [
     {

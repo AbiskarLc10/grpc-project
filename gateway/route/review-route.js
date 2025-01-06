@@ -90,9 +90,9 @@ router
 
 /**
  * @swagger
- * /api/edit-review/{bookId}/{reviewId}:
+ * /api/review/edit-review/{bookId}/{reviewId}:
  *   patch:
- *     tags: [Book-Routes]
+ *     tags: [Review-Routes]
  *     summary: Edit the posted review
  *     security:
  *       - bearerAuth: []
@@ -134,6 +134,34 @@ router
 router
   .route("/edit-review/:bookId/:reviewId")
   .patch(verifyUser, editBookReview);
+/**
+ * @swagger
+ * /api/review/get-reviews/{bookId}:
+ *   get:
+ *     tags: [Review-Routes]
+ *     summary: Get all the reviews for a book
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: bookId
+ *         required: true
+ *         description: Id of the book
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Reviews for books fetched successfully
+ *       404:
+ *         $ref: "#/components/responses/NotFound"
+ *       401:
+ *         $ref: "#/components/responses/UnauthorizedError"
+ *       403:
+ *         $ref: "#/components/responses/ForbiddenError"
+ *       500:
+ *         description: Internal server error.
+ */
+
 router.route("/get-reviews/:bookId").get(verifyUser, getBookReviewsById);
 
 module.exports = router;

@@ -27,7 +27,7 @@ const router = express.Router();
  *     tags: [Book-Routes]
  *     summary: Get all book details
  *     responses:
- *       200:
+ *       201:
  *         description: Book details fetched successfully
  *       500:
  *         description: Internal server error
@@ -36,13 +36,13 @@ router.route("/get-all-books").get(getAllBooks);
 
 /**
  * @swagger
- * /api/books/getbooks?author=authorName:
+ * /api/books/getbooks:
  *   get:
  *     tags: [Book-Routes]
  *     summary: Get the books by name of author
  *     parameters:
  *       - in: query
- *         name: authorName
+ *         name: author
  *         required: true
  *         schema:
  *           type: string
@@ -116,6 +116,12 @@ router.route("/add").post(verifyUser, addBook);
  *         name: bookId
  *         required: true
  *         description: Id of the book to be deleted
+ *         schema:
+ *           type: string
+ *       - in: path
+ *         name: authorId
+ *         required: true
+ *         description: Id of the author
  *         schema:
  *           type: string
  *     responses:
@@ -260,6 +266,29 @@ router.route("/get-books-by-date").get(getBookByDate);
  *         description: Internal server error
  */
 router.route("/getbooks/:pageNo").get(getBooksByPage);
+
+/**
+ * @swagger
+ * /api/books/get-data:
+ *   get:
+ *     tags: [Book-Routes]
+ *     summary: Get stream of book data
+ *     description: This endpoint streams book data in real-time using grpc stream.
+ *     responses:
+ *       200:
+ *         description: Books stream data fetched successfully
+ *         content:
+ *           text/event-stream:
+ *             schema:
+ *               type: string
+ *               example: "data: {\"title\":\"Book Title\",\"author\":\"Author Name\"}\n\n"
+ *       404:
+ *         $ref: "#/components/responses/NotFound"
+ *       500:
+ *         description: Internal server error, typically if the stream encounters an issue
+ *     
+ */
+
 router.route("/get-data").get(getAllData);
 
 module.exports = router;
