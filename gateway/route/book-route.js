@@ -58,6 +58,7 @@ router.route("/getbooks").get(getbooksByAuthor);
 /**
  * @swagger
  * /api/books/add:
+ *  post:
  *   tags: [Book-Routes]
  *   summary: Add a book
  *   security:
@@ -238,6 +239,26 @@ router.route("/getbook/:bookId").get(getBookById);
  */
 router.route("/get-books-by-date").get(getBookByDate);
 
+/**
+ * @swagger
+ * /api/book/getbooks/{pageNo}:
+ *   get:
+ *     tags: [Book-Routes]
+ *     summary: Get books by page number
+ *     parameters:
+ *       - in: path
+ *         name: pageNo
+ *         description: page number
+ *         schema:
+ *           type: string
+ *     responses:
+ *       200:
+ *         description: Book for the page fetched successfully
+ *       404:
+ *         $ref: "#/components/responses/NotFound"
+ *       500:
+ *         description: Internal server error
+ */
 router.route("/getbooks/:pageNo").get(getBooksByPage);
 router.route("/get-data").get(getAllData);
 
