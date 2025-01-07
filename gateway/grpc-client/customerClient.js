@@ -12,7 +12,7 @@ const customerPackageDefinations = protoloader.loadSync(
 const customerProto = grpc.loadPackageDefinition(customerPackageDefinations);
 
 const jwtInterceptor = (options, nextCall) => {
-  console.log(options);
+
   const requester = new grpc.RequesterBuilder().withStart(
     (metadata, listener, next) => {
       next(metadata, listener);

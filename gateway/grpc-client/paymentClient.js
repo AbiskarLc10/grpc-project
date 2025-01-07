@@ -28,7 +28,6 @@ const paymentProto = grpc.loadPackageDefinition(paymentPackageDefinations);
 
 const PaymentService = paymentProto.payment.PaymentService;
 
-console.log(PaymentService);
 const PaymentClient = new PaymentService(
   CUSTOMER_HOST_URL,
   grpc.credentials.createInsecure(),
