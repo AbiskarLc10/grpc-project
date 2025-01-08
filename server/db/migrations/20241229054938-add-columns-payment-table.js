@@ -16,7 +16,7 @@ module.exports = {
 
     await queryInterface.addColumn("Payments","paymentMethodId",{
         type: Sequelize.STRING
-    })
+    });
   },
 
   async down (queryInterface, Sequelize) {

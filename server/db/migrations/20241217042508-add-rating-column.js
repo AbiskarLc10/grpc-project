@@ -20,7 +20,7 @@ module.exports = {
       type: Sequelize.FLOAT,
       allowNull: false,
       defaultValue: 3.5
-    })
+    });
   },
 
   async down(queryInterface, Sequelize) {

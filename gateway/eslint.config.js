@@ -6,7 +6,7 @@ module.exports = [
         // "no-undef": "error",
         "prefer-const": "off", 
         "array-callback-return":"error",
-        "no-console":"error"
+        // "no-console":"error"
       }
     },
   ];

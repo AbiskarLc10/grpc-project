@@ -59,4 +59,4 @@ const SignUp = async (call, callback) => {
 };
 
 
-module.exports = SignUp
+module.exports = SignUp;

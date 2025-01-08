@@ -135,20 +135,20 @@ const updateTest = (updateAbleFields) =>{
 
   let fieldToUpdate = Object.keys(updateAbleFields);
   
-  console.log(fieldToUpdate)
+  console.log(fieldToUpdate);
   let setClause = fieldToUpdate.map((field)=>{
 
-    console.log(field)
+    console.log(field);
     if(!updateAbleFields[field]){
-      return ""
+      return "";
     }else{
-      return `${field}= :${field}`
+      return `${field}= :${field}`;
     }
-  }).join(", ")
+  }).join(", ");
 
-  console.log(`UPDATE reviews SET ${setClause} updatedAt = NOW() WHERE id = :reviewId AND reviewerId = :reviewerId AND bookId = :bookId`)
-}
+  console.log(`UPDATE reviews SET ${setClause} updatedAt = NOW() WHERE id = :reviewId AND reviewerId = :reviewerId AND bookId = :bookId`);
+};
 
 // updateTest({name:"dadad",age:20,salary:0})
-updateTest({description:"dnjadn",ratings:0})
+updateTest({description:"dnjadn",ratings:0});
 
