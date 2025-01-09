@@ -11,6 +11,7 @@ const UpdateAuthor = async (req, res, next) => {
         code: 403,
       });
     }
+    
 
     const response = await new Promise((resolve, reject) => {
       AuthorClient.UpdateProfile(
