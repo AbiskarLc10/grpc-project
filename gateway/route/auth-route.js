@@ -2,14 +2,16 @@ const express = require("express");
 const {
   SignUpAuthor,
   SignInAuthor,
+  SignInWithGoogle,
+  GoogleCallbackFunction,
 } = require("../Controllers/auth-controllers");
 const router = express.Router();
-  /**
-    * @swagger
-    * tags:
-    *   name: Author-Authorization
-    *   description: Api endpoints for authorization
-    */
+/**
+ * @swagger
+ * tags:
+ *   name: Author-Authorization
+ *   description: Api endpoints for authorization
+ */
 /**
  * @swagger
  * /api/auth/sign-up:
@@ -71,6 +73,7 @@ router.route("/sign-up").post(SignUpAuthor);
  */
 router.route("/sign-in").post(SignInAuthor);
 
+router.route("/google/sign-in").get(SignInWithGoogle);
 
-router.route("google/sign-in").get(SignInWithGoogle);
+router.route("/google/callback").get(GoogleCallbackFunction);
 module.exports = router;
