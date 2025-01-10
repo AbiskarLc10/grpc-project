@@ -71,4 +71,6 @@ router.route("/sign-up").post(SignUpAuthor);
  */
 router.route("/sign-in").post(SignInAuthor);
 
+
+router.route("google/sign-in").get(SignInWithGoogle);
 module.exports = router;
