@@ -34,7 +34,8 @@ const AuthInteceptor = (methodDescriptor, call) => {
         call.handler.path === "/customer.CustomerService/SignUpCustomer" ||
         call.handler.path === "/customer.CustomerService/SignInCustomer" ||
         call.handler.path === "/payment.PaymentService/PaymentSuccess" ||
-        call.handler.path === "/payment.PaymentService/PaymentCancel"
+        call.handler.path === "/payment.PaymentService/PaymentCancel" ||
+        call.handler.path === "/customer.CustomerService/CustomerGoogleAuthentication"
       ) {
         return next(metadata);
       } else {

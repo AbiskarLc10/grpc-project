@@ -2,8 +2,12 @@ const oauth2Client = require("../google/client");
 require("dotenv").config();
 const axios = require("axios");
 const { AxiosError } = require("axios");
+const jwt = require("jsonwebtoken");
 const customErrorHandler = require("../errors/customError");
 const { getUserInfo } = require("../google/utils");
+const AuthorClient = require("../grpc-client/authorClient");
+const CustomerClient = require("../grpc-client/customerClient");
+
 // const CLIENT_ID = process.env.GOOGLE_CLIENT_ID;
 // const OAUTH_URL = process.env.GOOGLE_OAUTH_URL;
 // const ACCESS_TOKEN_URL = process.env.GOOGLE_ACCESS_TOKEN_URL;
@@ -32,7 +36,6 @@ const SignInWithGoogle = (req, res, next) => {
     scope: [
       "https://www.googleapis.com/auth/userinfo.email",
       "https://www.googleapis.com/auth/userinfo.profile",
-      "https://www.googleapis.com/auth/user.birthday.read",
     ],
     redirect_uri: "http://localhost:8000/api/auth/google/callback",
     state: state,
@@ -96,13 +99,79 @@ const GoogleCallbackFunction = async (req, res, next) => {
 
     const { tokens } = await oauth2Client.getToken(code);
 
-    oauth2Client.setCredentials(tokens);
+    oauth2Client.setCredentials({
+      access_token: tokens.access_token,
+    });
     const ticket = await oauth2Client.verifyIdToken({
       idToken: tokens.id_token,
       audience: clientId,
     });
     const user = ticket.getPayload();
 
+    const userDetails = await getUserInfo(oauth2Client);
+
+    console.log(userDetails);
+
+    if (userType === "author") {
+      const response = await new Promise((resolve, reject) => {
+        AuthorClient.GoogleAuthentication(
+          {
+            name: user.name,
+            email: user.email,
+            date_of_birth: new Date(),
+            profileImage: user.picture,
+          },
+          (error, response) => {
+            if (error) {
+              reject({
+                details: error.details,
+                code: error.code,
+              });
+            }
+            resolve(response);
+          }
+        );
+      });
+
+      const token = jwt.sign(
+        { id: response.author.id, isAuthor: true },
+        process.env.PRIVATE_KEY,
+        {
+          expiresIn: "1hr",
+        }
+      );
+
+      return res.status(201).json({
+        message: "Sign in successfull",
+        author: response.author,
+        token: token,
+      });
+    } else if (userType === "customer") {
+      const response = await new Promise((resolve, reject) => {
+        CustomerClient.CustomerGoogleAuthentication(
+          {
+            fullName: user.name,
+            email: user.email,
+            profileImage: user.picture,
+            address: user.address || "Nepal",
+            dateOfBirth: new Date(),
+          },
+          (error, response) => {
+            if (error) {
+              reject({
+                details: error.details,
+                code: error.code,
+              });
+            }
+            resolve(response);
+          }
+        );
+      });
+
+      return res
+        .status(201)
+        .json({ message: "Google Authentication successful", ...response });
+    }
     // console.log("User Info:", user);
     // console.log(tokens.access_token);
     // const userDetails = await axios.get(
@@ -115,29 +184,24 @@ const GoogleCallbackFunction = async (req, res, next) => {
     // );
     // console.log(userDetails.data);
 
-    const userDetails = await getUserInfo(oauth2Client);
-
-    
-
-    console.log(userDetails);
-    return res.status(200).json({
-      message: "Authentication successful",
-      user,
-      accessToken: tokens.access_token,
-      refreshToken: tokens.refresh_token,
-    });
+    // return res.status(200).json({
+    //   message: "Authentication successful",
+    //   user,
+    //   accessToken: tokens.access_token,
+    //   refreshToken: tokens.refresh_token,
+    // });
   } catch (error) {
     console.error("Error during Google OAuth callback:", error);
 
-    if (error instanceof AxiosError) {
-      return customErrorHandler(
-        {
-          details: error.message,
-          code: error.response?.status,
-        },
-        next
-      );
-    }
+    // if (error instanceof AxiosError) {
+    //   return customErrorHandler(
+    //     {
+    //       details: error.message,
+    //       code: error.response?.status,
+    //     },
+    //     next
+    //   );
+    // }
     return customErrorHandler(
       {
         details: error.details || error.message || "Unknown error",

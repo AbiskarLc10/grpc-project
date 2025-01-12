@@ -56,6 +56,7 @@ message GoogleAuthRequest {
     string email = 2;
     string date_of_birth = 3;
     Genre genre = 4;
+    string profileImage = 5;
 }
 service AuthorService {
     rpc SignUp(SignUpRequest) returns (SignUpResponse) {};

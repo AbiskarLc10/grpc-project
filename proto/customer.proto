@@ -51,6 +51,14 @@ message GetOrderDetailsRequest{
 message GetOrderDetailsResponse{
     Order order = 1;
 }
+message CustomerGoogleAuthRequest{
+    string fullName = 1;
+    string email = 2;
+    string profileImage = 3;
+    string address = 4;
+    string dateOfBirth = 5;
+}
+
 
 service CustomerService {
     rpc SignUpCustomer(SignUpCustomerRequest) returns (SignUpCustomerResponse) {};
@@ -58,4 +66,5 @@ service CustomerService {
     rpc OrderBook(OrderBookRequest) returns (OrderBookResponse) {};
     rpc CancelBookOrder(CancelBookOrderRequest) returns (CancelBookOrderResponse) {};
     rpc GetOrderDetails(GetOrderDetailsRequest) returns (GetOrderDetailsResponse) {};
+    rpc CustomerGoogleAuthentication(CustomerGoogleAuthRequest) returns (SignInCustomerResponse) {};
 }
