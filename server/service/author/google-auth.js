@@ -5,7 +5,7 @@ const bcrypt = require("bcrypt");
 
 const GoogleAuthentication = async (call, callback) => {
   try {
-    const { name, email, genre, date_of_birth } = call.request;
+    const { name, email, genre, date_of_birth,profileImage } = call.request;
 
     if (!name || !email) {
       return callback({
@@ -33,6 +33,7 @@ const GoogleAuthentication = async (call, callback) => {
         email: email,
         password: await bcrypt.hash(password, 10),
         genre: genre,
+        profileImage: profileImage,
         date_of_birth: date_of_birth || new Date(),
       });
 

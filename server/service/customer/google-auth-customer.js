@@ -1,7 +1,6 @@
 const bcrypt = require("bcrypt");
 const grpc = require("@grpc/grpc-js");
 const sequelize = require("../../db/connection");
-const { Sequelize } = require("../../db/models");
 const jwt = require("jsonwebtoken");
 const { Customer } = require("../../db/models/index");
 
