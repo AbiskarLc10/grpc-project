@@ -5,7 +5,7 @@ async function getUserInfo(oauth2Client) {
   const res = await people.people.get({
     resourceName: "people/me",
     auth: oauth2Client,
-    personFields: "names,birthdays",
+    personFields: "names,birthdays,addresses",
   });
 
   console.log(res);

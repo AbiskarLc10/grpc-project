@@ -107,18 +107,35 @@ const GoogleCallbackFunction = async (req, res, next) => {
       audience: clientId,
     });
     const user = ticket.getPayload();
-
+    // const userDetails = await axios.get(
+    //   "https://www.googleapis.com/oauth2/v2/userinfo",
+    //   {
+    //     headers: {
+    //       Authorization: `Bearer ${tokens.access_token}`,
+    //     },
+    //   }
+    // );
+    // console.log(userDetails.data);
     const userDetails = await getUserInfo(oauth2Client);
 
-    console.log(userDetails);
-
+    
+    let birthdate;
+    if (userDetails.birthdays) {
+      birthdate = userDetails.birthdays[0].date;
+    }
     if (userType === "author") {
       const response = await new Promise((resolve, reject) => {
         AuthorClient.GoogleAuthentication(
           {
             name: user.name,
             email: user.email,
-            date_of_birth: new Date(),
+            date_of_birth: birthdate
+              ? new Date(
+                  birthdate.year,
+                  birthdate.month,
+                  birthdate.day
+                ).toISOString()
+              : new Date().toISOString(),
             profileImage: user.picture,
           },
           (error, response) => {
@@ -154,7 +171,13 @@ const GoogleCallbackFunction = async (req, res, next) => {
             email: user.email,
             profileImage: user.picture,
             address: user.address || "Nepal",
-            dateOfBirth: new Date(),
+            dateOfBirth: birthdate
+              ? new Date(
+                  birthdate.year,
+                  birthdate.month,
+                  birthdate.day
+                ).toISOString()
+              : new Date().toISOString(),
           },
           (error, response) => {
             if (error) {
@@ -172,24 +195,7 @@ const GoogleCallbackFunction = async (req, res, next) => {
         .status(201)
         .json({ message: "Google Authentication successful", ...response });
     }
-    // console.log("User Info:", user);
-    // console.log(tokens.access_token);
-    // const userDetails = await axios.get(
-    //   "https://people.googleapis.com/v1/people/me",
-    //   {
-    //     headers: {
-    //       Authorization: `Bearer ${tokens.access_token}`,
-    //     },
-    //   }
-    // );
-    // console.log(userDetails.data);
 
-    // return res.status(200).json({
-    //   message: "Authentication successful",
-    //   user,
-    //   accessToken: tokens.access_token,
-    //   refreshToken: tokens.refresh_token,
-    // });
   } catch (error) {
     console.error("Error during Google OAuth callback:", error);
 
