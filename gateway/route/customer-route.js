@@ -6,6 +6,7 @@ const {
   signInCustomer,
   signUpCustomer,
 } = require("../Controllers/customer-controllers");
+const { SignInWithGoogle, GoogleCallbackFunction } = require("../Controllers/google-auth-controllers");
 const router = express.Router();
 /**
  * @swagger
@@ -70,6 +71,10 @@ router.route("/sign-up").post(signUpCustomer);
  *          description: Internal server error
  */
 router.route("/sign-in").post(signInCustomer);
+
+router.route("/google/sign-in").get(SignInWithGoogle);
+
+// router.route("/google/callback").get(GoogleCallbackFunction);
 
 /**
  * @swagger
@@ -162,4 +167,3 @@ router.route("/cancel-order/:orderId").delete(cancelBookOrder);
 router.route("/get-order/:orderId").get(getOrderDetails);
 
 module.exports = router;
-

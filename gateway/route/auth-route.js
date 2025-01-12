@@ -2,9 +2,8 @@ const express = require("express");
 const {
   SignUpAuthor,
   SignInAuthor,
-  SignInWithGoogle,
-  GoogleCallbackFunction,
 } = require("../Controllers/auth-controllers");
+const { SignInWithGoogle, GoogleCallbackFunction } = require("../Controllers/google-auth-controllers");
 const router = express.Router();
 /**
  * @swagger

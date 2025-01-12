@@ -50,9 +50,17 @@ message GetAuthorRequest {
 message GetAuthorResponse{
     Author author = 1;
 }
+
+message GoogleAuthRequest {
+    string name = 1;
+    string email = 2;
+    string date_of_birth = 3;
+    Genre genre = 4;
+}
 service AuthorService {
     rpc SignUp(SignUpRequest) returns (SignUpResponse) {};
     rpc SignIn(SignInRequest) returns (SignInResponse) {};
+    rpc GoogleAuthentication(GoogleAuthRequest) returns (SignInResponse) {};
     rpc UpdateProfile(UpdateProfileRequest) returns (UpdateProfileResponse) {};
     rpc DeleteProfile(DeleteProfileRequest) returns (DeleteProfileResponse) {};
     rpc GetAuthorById (GetAuthorRequest) returns (GetAuthorResponse) {};
