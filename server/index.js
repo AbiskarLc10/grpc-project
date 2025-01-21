@@ -1,7 +1,6 @@
 const grpc = require("@grpc/grpc-js");
 const protoloader = require("@grpc/proto-loader");
 const path = require("path");
-
 //Config data for grpc server and package setup
 const {
   BOOK_PROTO_PATH,
@@ -25,6 +24,7 @@ const PaymentService = require("./service/payment/index");
 //Conection variable
 const sequelize = require("./db/connection");
 const AuthInteceptor = require("./interceptors/authInterceptor");
+const logger = require("./lib/logger");
 
 //Protofile paths
 const bookProtoPath = path.resolve(BOOK_PROTO_PATH);

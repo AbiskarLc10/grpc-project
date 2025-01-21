@@ -6,7 +6,7 @@
     "test": "node test/query.js",
     "start": "nodemon ./index.js",
     "lint": "eslint .",
-    "lint:fix":"eslint . --fix"
+    "lint:fix": "eslint . --fix"
   },
   "keywords": [],
   "author": "",
@@ -23,6 +23,7 @@
     "nodemailer": "^6.9.16",
     "sequelize": "^6.37.5",
     "uuid": "^11.0.3",
+    "winston": "^3.17.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
