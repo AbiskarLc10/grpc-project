@@ -1,0 +1,8 @@
+{
+  "scripts": {
+    "proto:bundle":"node_modules\\.bin\\pbjs -t json-module -w commonjs -o bundle.js *.proto"
+  },
+  "dependencies": {
+    "protobufjs-cli": "^1.1.3"
+  }
+}
