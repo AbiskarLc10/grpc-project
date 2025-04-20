@@ -1,5 +1,9 @@
 const grpc = require("@grpc/grpc-js");
 const sequelize = require("../../db/connection");
+const {
+  CheckBooksInCache,
+  AddBooksToRedis,
+} = require("../../redisClient/utils");
 
 const GetBookByAuthor = async (call, callback) => {
   try {
@@ -27,6 +31,11 @@ const GetBookByAuthor = async (call, callback) => {
     //     },
     //   }
     // );
+    const booksInCache = await CheckBooksInCache(`books:author:${author}`);
+
+    if (booksInCache) {
+      return callback(null, { books: booksInCache });
+    }
 
     const foundBooks = await sequelize.query("CALL GetBookByAuthor(:author)", {
       replacements: {
@@ -40,6 +49,8 @@ const GetBookByAuthor = async (call, callback) => {
         code: grpc.status.NOT_FOUND,
       });
     }
+
+    await AddBooksToRedis(foundBooks, `books:author:${author}`);
 
     return callback(null, { books: foundBooks });
     // if (foundBooks[0].length === 0) {
@@ -58,6 +69,5 @@ const GetBookByAuthor = async (call, callback) => {
     });
   }
 };
-
 
 module.exports = GetBookByAuthor;

@@ -1,5 +1,9 @@
 const grpc = require("@grpc/grpc-js");
 const { Author } = require("../../db/models/index");
+const {
+  CheckAndUpdateRedisDatabase,
+  AddUserToRedis,
+} = require("../../redisClient/utils");
 
 const GetAuthorById = async (call, callback) => {
   try {
@@ -13,6 +17,13 @@ const GetAuthorById = async (call, callback) => {
       });
     }
 
+    const userInCache = await CheckAndUpdateRedisDatabase(authorId);
+
+    if (userInCache) {
+      return callback(null, {
+        author: userInCache,
+      });
+    }
     const authorData = await Author.findByPk(authorId);
 
     if (!authorData) {
@@ -21,6 +32,8 @@ const GetAuthorById = async (call, callback) => {
         code: grpc.status.NOT_FOUND,
       });
     }
+
+    await AddUserToRedis(authorData, authorId);
 
     return callback(null, {
       author: authorData,
@@ -33,6 +46,5 @@ const GetAuthorById = async (call, callback) => {
     });
   }
 };
-
 
 module.exports = GetAuthorById;
