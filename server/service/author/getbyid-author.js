@@ -1,8 +1,9 @@
 const grpc = require("@grpc/grpc-js");
 const { Author } = require("../../db/models/index");
 const {
-  CheckAndUpdateRedisDatabase,
+  CheckDataInRedisDatabase,
   AddUserToRedis,
+  CheckDataInRedisDatabase,
 } = require("../../redisClient/utils");
 
 const GetAuthorById = async (call, callback) => {
@@ -17,7 +18,7 @@ const GetAuthorById = async (call, callback) => {
       });
     }
 
-    const userInCache = await CheckAndUpdateRedisDatabase(authorId);
+    const userInCache = await CheckDataInRedisDatabase(`user:${authorId}`);
 
     if (userInCache) {
       return callback(null, {

@@ -1,6 +1,10 @@
 const grpc = require("@grpc/grpc-js");
 const { Book } = require("../../db/models/index");
 const sequelize = require("../../db/connection");
+const {
+  AddBooksToRedis,
+  CheckDataInRedisDatabase,
+} = require("../../redisClient/utils");
 
 const GetBooksPerPage = async (call, callback) => {
   try {
@@ -13,6 +17,12 @@ const GetBooksPerPage = async (call, callback) => {
       });
     }
 
+    const booksInCache = await CheckDataInRedisDatabase(`books:page:${pageNo}`);
+    if (booksInCache) {
+      return callback(null, {
+        books: booksInCache,
+      });
+    }
     const books = await sequelize.query("CALL GetBookPerPage(:pageno)", {
       replacements: {
         pageno: pageNo,
@@ -26,6 +36,7 @@ const GetBooksPerPage = async (call, callback) => {
       });
     }
 
+    await AddBooksToRedis(books, `books:page:${pageNo}`);
     return callback(null, {
       books: books,
     });
@@ -37,6 +48,5 @@ const GetBooksPerPage = async (call, callback) => {
     });
   }
 };
-
 
 module.exports = GetBooksPerPage;

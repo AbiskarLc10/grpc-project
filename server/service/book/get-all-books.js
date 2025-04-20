@@ -2,12 +2,12 @@ const grpc = require("@grpc/grpc-js");
 const { Book } = require("../../db/models/index");
 const {
   AddBooksToRedis,
-  CheckBooksInCache,
+  CheckDataInRedisDatabase,
 } = require("../../redisClient/utils");
 
 const GetAllBook = async (call, callback) => {
   try {
-    const booksInCache = await CheckBooksInCache("books:all");
+    const booksInCache = await CheckDataInRedisDatabase("books:all");
 
     if (booksInCache) {
       return callback(null, { books: booksInCache });

@@ -1,12 +1,12 @@
 const client = require("./redisclient");
 
-const CheckAndUpdateRedisDatabase = async (userId) => {
+const CheckDataInRedisDatabase = async (key) => {
   try {
-    const userCachedData = await client.get(userId);
+    const redisCachedData = await client.get(key);
 
-    console.log(userCachedData);
-    if (userCachedData) {
-      return JSON.parse(userCachedData);
+    console.log(redisCachedData);
+    if (redisCachedData) {
+      return JSON.parse(redisCachedData);
     }
 
     return null;
@@ -17,8 +17,13 @@ const CheckAndUpdateRedisDatabase = async (userId) => {
 
 const AddUserToRedis = async (userData, userId) => {
   try {
-    await client.setEx(`user:${userId}`, 3600, JSON.stringify(userData));
+    await client.setEx(
+      `user:${userId}`,
+      3600,
+      JSON.stringify(userData, null, 2)
+    );
   } catch (error) {
+    console.error(`Redis setEx failed for User: ${key}`, error);
     throw error;
   }
 };
@@ -27,23 +32,23 @@ const AddBooksToRedis = async (books, key) => {
   try {
     await client.setEx(key, 3600, JSON.stringify(books));
   } catch (error) {
+    console.error(`Redis setEx failed for key: ${key}`, error);
     throw error;
   }
 };
 
-const CheckBooksInCache = async (key) => {
+const AddReviewsToRedis = async (reviews, key) => {
   try {
-    const booksInCache = await client.get(key);
-
-    if (booksInCache) {
-      return JSON.parse(booksInCache);
-    }
-    return null;
-  } catch (error) {}
+    await client.setEx(key, 3600, JSON.stringify(reviews));
+  } catch (error) {
+    console.error(`Redis setEx failed for reviews key: ${key}`, error);
+    throw error;
+  }
 };
+
 module.exports = {
-  CheckAndUpdateRedisDatabase,
+  CheckDataInRedisDatabase,
   AddUserToRedis,
   AddBooksToRedis,
-  CheckBooksInCache,
+  AddReviewsToRedis,
 };

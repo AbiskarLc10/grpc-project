@@ -1,8 +1,8 @@
 const grpc = require("@grpc/grpc-js");
 const sequelize = require("../../db/connection");
 const {
-  CheckBooksInCache,
   AddBooksToRedis,
+  CheckDataInRedisDatabase,
 } = require("../../redisClient/utils");
 
 const GetBookByAuthor = async (call, callback) => {
@@ -31,7 +31,7 @@ const GetBookByAuthor = async (call, callback) => {
     //     },
     //   }
     // );
-    const booksInCache = await CheckBooksInCache(`books:author:${author}`);
+    const booksInCache = await CheckDataInRedisDatabase(`books:author:${author}`);
 
     if (booksInCache) {
       return callback(null, { books: booksInCache });

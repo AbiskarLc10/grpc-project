@@ -1,5 +1,9 @@
 const grpc = require("@grpc/grpc-js");
 const sequelize = require("../../db/connection.js");
+const {
+  CheckDataInRedisDatabase,
+  AddReviewsToRedis,
+} = require("../../redisClient/utils.js");
 
 const GetAllReviews = async (call, callback) => {
   try {
@@ -9,6 +13,13 @@ const GetAllReviews = async (call, callback) => {
       return callback({
         details: "Insufficient data to fetch review",
         code: grpc.status.INVALID_ARGUMENT,
+      });
+    }
+
+    const reviewsInCache = await CheckDataInRedisDatabase(`reviews:${bookId}`);
+    if (reviewsInCache) {
+      return callback(null, {
+        reviews: reviewsInCache,
       });
     }
 
@@ -50,6 +61,7 @@ const GetAllReviews = async (call, callback) => {
       });
     }
 
+    await AddReviewsToRedis(bookReviews, `reviews:${bookId}`);
     return callback(null, {
       reviews: bookReviews,
     });
