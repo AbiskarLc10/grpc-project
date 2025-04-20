@@ -25,6 +25,7 @@ const PaymentService = require("./service/payment/index");
 const sequelize = require("./db/connection");
 const AuthInteceptor = require("./interceptors/authInterceptor");
 const logger = require("./lib/logger");
+const client = require("./redisClient/redisclient");
 
 //Protofile paths
 const bookProtoPath = path.resolve(BOOK_PROTO_PATH);
@@ -49,7 +50,7 @@ console.log(typeof packageDefinations);
 
 //object instance of packaged definations
 const Proto = grpc.loadPackageDefinition(packageDefinations);
-
+console.log(Proto);
 const bookService = Proto.book.BookService.service;
 const authorService = Proto.author.AuthorService.service;
 const reviewService = Proto.review.ReviewService.service;
@@ -77,6 +78,7 @@ sequelize
   .authenticate()
   .then(async () => {
     // await sequelize.sync({alter:true});
+    await client.connect();
     console.log("Connected to database Successfully");
     server.bindAsync(
       AUTHOR_HOST_URL,

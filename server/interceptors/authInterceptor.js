@@ -11,8 +11,6 @@ const validateMetaData = (tokenData, call) => {
       code: grpc.status.NOT_FOUND,
     });
   }
-
-
   return jwt.verify(token, process.env.PRIVATE_KEY, (error, data) => {
     if (error) {
       if (error instanceof jwt.JsonWebTokenError) {

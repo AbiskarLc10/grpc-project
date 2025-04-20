@@ -269,7 +269,7 @@ const updateBook = async (req, res, next) => {
         next
       );
     }
-    if (genre) genre = genre.toUpperCase();
+    if (genre){ genre = genre.toUpperCase();};
 
     validate({ ...req.body }, UpdateBookSchema);
     if (
