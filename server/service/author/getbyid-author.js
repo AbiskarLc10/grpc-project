@@ -3,7 +3,6 @@ const { Author } = require("../../db/models/index");
 const {
   CheckDataInRedisDatabase,
   AddUserToRedis,
-  CheckDataInRedisDatabase,
 } = require("../../redisClient/utils");
 
 const GetAuthorById = async (call, callback) => {

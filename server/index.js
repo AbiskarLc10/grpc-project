@@ -79,6 +79,10 @@ sequelize
   .then(async () => {
     // await sequelize.sync({alter:true});
     await client.connect();
+    await client.subscribe("userdata", (message) => {
+      const data = JSON.parse(message);
+      console.log("Received event:", data);
+    });
     console.log("Connected to database Successfully");
     server.bindAsync(
       AUTHOR_HOST_URL,
