@@ -152,3 +152,4 @@ const updateTest = (updateAbleFields) =>{
 // updateTest({name:"dadad",age:20,salary:0})
 updateTest({description:"dnjadn",ratings:0});
 
+console.log("Heloo its me abiskar")

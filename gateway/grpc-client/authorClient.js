@@ -13,8 +13,8 @@ const authorPackageDefination = protoloader.loadSync(
   PROTO_LOADER_OPTION
 );
 const authorProto = grpc.loadPackageDefinition(authorPackageDefination);
-
 const AuthorService = authorProto.author.AuthorService;
+
 const AuthorClient = new AuthorService(
   AUTHOR_HOST_URL,
   grpc.credentials.createInsecure()
