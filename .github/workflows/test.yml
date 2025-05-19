@@ -1,5 +1,3 @@
-# .github/workflows/test.yml
-
 name: Run test programs workflows
 
 on:
@@ -21,7 +19,12 @@ jobs:
           cd server
           npm install
 
-      - name: Upload node modules as artifacts
+      - name: Verify node_modules existence
+        run: |
+          echo "Verifying node_modules exists"
+          ls -l server/node_modules  # List the directory to confirm node_modules is created
+          
+      - name: Upload node_modules as artifacts
         uses: actions/upload-artifact@v3
         with:
           name: node_modules
@@ -33,6 +36,7 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+
       - name: Downloading node_modules from uploaded artifact
         uses: actions/download-artifact@v3
         with:
