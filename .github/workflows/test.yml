@@ -22,7 +22,7 @@ jobs:
           npm install
 
       - name: Upload node modules as artifacts
-        uses: actions/upload-artifacts@v4
+        uses: actions/upload-artifacts@v3
         with:
           name: node_modules
           path: server/node_modules
@@ -34,7 +34,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
       - name: Downloading node_modules from uploaded artifacts
-        uses: actions/download-artifacts@v4
+        uses: actions/download-artifacts@v3
         with:
           name: node_modules
           path: server/node_modules
