@@ -16,7 +16,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install dependencies
-        run: cd server && npm install
+        run: |
+         echo "changing the directory to server and installing dependencies"
+         cd server
+         npm install
 
       - name: Test to run a function
         run: npm run test
