@@ -22,4 +22,4 @@ jobs:
          npm install
 
       - name: Test to run a function
-        run: npm run test
+        run: npm run jest
