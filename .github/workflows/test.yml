@@ -9,7 +9,7 @@ on:
     branches: ["main"]
 
 jobs:
-  test:
+  build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -17,9 +17,15 @@ jobs:
 
       - name: Install dependencies
         run: |
-         echo "changing the directory to server and installing dependencies"
-         cd server
-         npm install
+          echo "changing the directory to server and installing dependencies"
+          cd server
+          npm install
 
+  test:
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
       - name: Test to run a function
         run: npm run test
