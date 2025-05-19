@@ -24,11 +24,11 @@ jobs:
           echo "Verifying node_modules exists"
           ls -l server/node_modules  # List the directory to confirm node_modules is created
           
-      # - name: Upload node_modules as artifacts
-      #   uses: actions/upload-artifact@v3
-      #   with:
-      #     name: node_modules
-      #     path: server/node_modules
+      - name: Upload node_modules as artifacts
+        uses: actions/upload-artifact@v3
+        with:
+          name: node_modules
+          path: server/node_modules  
 
   test:
     needs: [build]
@@ -37,11 +37,14 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Downloading node_modules from uploaded artifact
+      - name: Download node_modules from uploaded artifact
         uses: actions/download-artifact@v3
         with:
-          name: node_modules
-          path: server/node_modules
+          name: node_modules  
+          path: server/node_modules  
 
       - name: Test to run a function
-        run: npm run test
+        run: |
+          echo "Running tests..."
+          cd server
+          npm run test
