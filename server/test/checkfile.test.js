@@ -5,5 +5,5 @@ test("Testing the file for github workflows", () => {
 
   const result = addFunc(12, 12);
 
-  expect(result).toBe("Trying to fail the git hub action");
+  expect(result).toBe(24);
 });
