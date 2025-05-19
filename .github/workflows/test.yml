@@ -21,11 +21,23 @@ jobs:
           cd server
           npm install
 
+      - name: Upload node modules as artifacts
+        uses: actions/upload-artifacts@v4
+        with:
+          name: node_modules
+          path: server/node_modules
+
   test:
     needs: [build]
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+      - name: Downloading node_modules from uploaded artifacts
+        uses: actions/download-artifacts@v4
+        with:
+          name: node_modules
+          path: server/node_modules
+
       - name: Test to run a function
         run: npm run test
