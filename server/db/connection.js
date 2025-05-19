@@ -5,6 +5,7 @@ const logger = require("../lib/logger");
 const environment = process.env.NODE_ENV || "development";
 let environmentConfig = config[environment];
 
+
 const sequelize = new Sequelize({
   database: environmentConfig.database,
   username: environmentConfig.username,
@@ -14,5 +15,7 @@ const sequelize = new Sequelize({
     logger.info(message);
   },
 });
+
+
 
 module.exports = sequelize;
