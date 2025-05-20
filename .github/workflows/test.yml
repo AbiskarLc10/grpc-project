@@ -20,8 +20,8 @@ jobs:
           echo "changing the directory to server and installing dependencies"
           cd server
           npm install 
-          apt update
-          apt install vim
+          sudo apt update
+          sudo apt install vim
           echo "The current directory"
           ls -l
 
