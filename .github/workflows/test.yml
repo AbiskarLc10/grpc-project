@@ -19,11 +19,7 @@ jobs:
         run: |
           echo "changing the directory to server and installing dependencies"
           cd server
-          npm install 
-          sudo apt update
-          sudo apt install vim
-          echo "The current directory"
-          ls -l
+          npm install
 
       - name: Verify node_modules existence
         run: |
