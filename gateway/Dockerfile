@@ -8,7 +8,7 @@ RUN npm install
 
 COPY /gateway .
 
-COPY .env .env
+COPY gateway/.env .env
 
 COPY /proto /backend/proto
 
