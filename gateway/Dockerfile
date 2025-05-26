@@ -8,7 +8,7 @@ RUN npm install
 
 COPY . .
 
-COPY ../proto /backend/proto
+COPY ./proto /backend/proto
 
 RUN npm i -g nodemon
 
