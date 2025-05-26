@@ -8,6 +8,8 @@ RUN npm install
 
 COPY /gateway .
 
+COPY /gateway/.env .env
+
 COPY /proto /backend/proto
 
 RUN npm i -g nodemon

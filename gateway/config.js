@@ -1,6 +1,6 @@
 require("dotenv").config();
-const AUTHOR_HOST_URL = process.env.AUTHOR_HOST_URL || "localhost:50051";
-const CUSTOMER_HOST_URL = process.env.CUSTOMER_HOST_URL || "localhost:50052";
+const AUTHOR_HOST_URL = process.env.AUTHOR_HOST_URL;
+const CUSTOMER_HOST_URL = process.env.CUSTOMER_HOST_URL;
 const BOOK_PROTO_PATH = "../proto/book.proto";
 const AUTHOR_PROTO_PATH = "../proto/author.proto";
 const REVIEW_PROTO_PATH = "../proto/review.proto";
