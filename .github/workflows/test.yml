@@ -21,7 +21,7 @@ jobs:
           cd server
           npm install
           docker build -t gateway .
-        working-directory: ./gateway
+        # working-directory: ./gateway
 
       - name: Verify node_modules existence
         run: |
