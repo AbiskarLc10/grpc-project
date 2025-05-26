@@ -10,4 +10,5 @@ COPY . .
 
 EXPOSE 8000
 
-CMD ["node","index.js"]
+# CMD ["node","index.js"]
+RUN npm run start
