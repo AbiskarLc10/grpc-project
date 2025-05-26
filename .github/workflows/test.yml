@@ -29,7 +29,7 @@ jobs:
       - name: Verify node_modules existence
         run: |
           echo "Verifying node_modules exists"
-          ls -l server/node_modules  # List the directory to confirm node_modules is created
+          ls -l server/node_modules 
           
       - name: Upload node_modules as artifacts
         uses: actions/upload-artifact@v4
