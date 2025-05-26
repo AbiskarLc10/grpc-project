@@ -1,4 +1,5 @@
 require("dotenv").config();
+console.log(process.env)
 const AUTHOR_HOST_URL = process.env.AUTHOR_HOST_URL;
 const CUSTOMER_HOST_URL = process.env.CUSTOMER_HOST_URL;
 const BOOK_PROTO_PATH = "../proto/book.proto";
