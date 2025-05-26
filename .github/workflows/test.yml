@@ -25,7 +25,7 @@ jobs:
       - name: Build Docker File
         run: |
           echo "Building gateway docker file"
-          docker build -f gateway/Dockerfile -t gateway .
+          docker build -f Dockerfile -t gateway .
         working-directory: ./gateway
 
       - name: Verify node_modules existence
