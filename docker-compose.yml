@@ -1,0 +1,11 @@
+version: "3.7"
+
+services:
+  gateway:
+    build: ./gateway
+    container_name: gateway
+    volumes:
+      - ./proto:/backend/proto
+      - ./gateway/.env:/backend/gateway/.env
+    ports:
+      - 8000:8000
