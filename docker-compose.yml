@@ -8,5 +8,27 @@ services:
       - ./proto:/backend/proto
       - ./gateway/.env:/backend/gateway/.env
     ports:
-      - 8000:8000
+      - "8000:8000"
+    networks: 
+      - my-net
+  
+  server:
+    build: ./server
+    container_name: server
+    volumes: 
+      - ./proto:/backend/proto
+    ports:
+      - "50051:50051"
+      - "50052:50052"
+    environment: 
+      - NODE_ENV=development
+      - APP_PASS=ajkpdulljottleps
+      - PRIVATE_KEY=HELLOIAMABISKARLAMICHHANE 
+      - AUTHOR_HOST_URL=localhost:50051
+      - CUSTOMER_HOST_URL=localhost:50052
+    networks: 
+      - my-net
 
+networks:
+  my-net:
+    driver: bridge 
