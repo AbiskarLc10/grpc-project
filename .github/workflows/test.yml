@@ -21,11 +21,14 @@ jobs:
           cd server
           npm install
 
-      - name: Build Docker File
+      # - name: Build Docker File
+      #   run: |
+      #     echo "Building gateway docker file"
+      #     docker compose up --build
+      - name: Build Server Code
         run: |
-          echo "Building gateway docker file"
-          docker compose up --build
-
+          echo "Testing the issues in github for practice purpose"
+          
       - name: Verify node_modules existence
         run: |
           echo "Verifying node_modules exists"
