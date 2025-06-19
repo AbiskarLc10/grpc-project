@@ -1,4 +1,4 @@
-// const CryptoJS = require("crypto-js");
+const CryptoJS = require("crypto-js");
 
 // const testData = [
 //   {
@@ -61,6 +61,21 @@ queryStr4 += `, email = ?`;
 let query4 = mysqlString.format(queryStr4,[['users'],"Abiskar","abinjr08@gmail.com"])
 
 console.log(query4)
-
+const testLine = "New code test line"
+console.log(testLine)
 let newQuery = mysqlString.format("DROP table ??",[['hello']]);
 console.log(newQuery)
+
+const createHash = (message,key) =>{
+
+    try {
+        const data = Buffer.from(JSON.stringify(message)).toString('base64');
+        console.log(atob(data))
+        const hashedStr = CryptoJS.HmacSHA256(data,key).toString(CryptoJS.enc.Hex);
+        console.log(hashedStr)
+    } catch (error) {
+        console.log(error)
+    }
+}
+
+createHash("Abiskar","key")
