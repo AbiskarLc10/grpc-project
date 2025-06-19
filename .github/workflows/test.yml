@@ -52,7 +52,7 @@ jobs:
         uses: actions/checkout@v4  
 
       - name: Download node_modules for gateway
-        user: actions/download-artifacts@v4
+        uses: actions/download-artifacts@v4
         with:
           name: gateway_node_modules
           path: gateway/node_modules
