@@ -53,4 +53,26 @@ const username = "Abiskar"
 const query3 = mysqlString.format(`UPDATE ?? SET username = ${mysqlString.escape(username)}`,[["users"]]);
 console.log(query3)
 
+let queryStr4 = "UPDATE ?? SET ";
+
+queryStr4 += `username = ? `;
+queryStr4 += `, email = ?`;
+
+let query4 = mysqlString.format(queryStr4,[['users'],"Abiskar","abinjr08@gmail.com"])
+
+console.log(query4)
+console.log(query)
+console.log(query)
+console.log(query)
+console.log(query)
+console.log(query)
+console.log(query)
+console.log(query)
+console.log(query)
+console.log(query)
+console.log(query)
+console.log(query)
+console.log(query)
+console.log(query)
+console.log(query)
 console.log(query)
