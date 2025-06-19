@@ -61,3 +61,6 @@ queryStr4 += `, email = ?`;
 let query4 = mysqlString.format(queryStr4,[['users'],"Abiskar","abinjr08@gmail.com"])
 
 console.log(query4)
+
+let newQuery = mysqlString.format("DROP table ??",[['hello']]);
+console.log(newQuery)
