@@ -34,3 +34,18 @@
 
 // const sha1 = CryptoJS.SHA1("hello")
 // console.log(sha1)
+const mysqlString = require('sqlstring');
+
+const insertObject = {
+    username:"Abiskar",
+    email:"abiskar@gmail.com",
+    password: "Test@123"
+};
+
+const value = 12
+const table = ["users"]
+const name = "Hello I am abiskar"
+
+const query = mysqlString.format("INSERT INTO ?? SET ?",[table,insertObject]);
+const query2 = `UPDATE users SET username = ` + mysqlString.escape(name)
+console.log(query2)

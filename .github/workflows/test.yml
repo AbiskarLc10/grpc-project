@@ -15,16 +15,23 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install dependencies
+      - name: Install dependencies for gateway
         run: |
-          echo "changing the directory to server and installing dependencies"
-          cd server
+          echo "Changing directory to gateway"
+          cd gateway && echo "Installing Dependencies"
           npm install
 
-      - name: Build Docker File
-        run: |
-          echo "Building gateway docker file"
+      - name: Prepare artifacts for gateway
+        uses: actions/upload-artifact@v4
+        with:
+          name: gateway_node_modules
+          path: gateway/node_modules
 
+      - name: Install dependencies for server
+        run: |
+          echo "changing the directory to server and installing dependencies"
+          cd ../server
+          npm install
 
       - name: Verify node_modules existence
         run: |
@@ -34,7 +41,7 @@ jobs:
       - name: Upload node_modules as artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: node_modules
+          name: server_node_modules
           path: server/node_modules  
 
   test:
@@ -55,4 +62,5 @@ jobs:
           echo "Running tests..."
           cd server
           npm install -D jest
+          npm run 
           npm run test
