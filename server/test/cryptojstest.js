@@ -49,3 +49,8 @@ const name = "Hello I am abiskar"
 const query = mysqlString.format("INSERT INTO ?? SET ?",[table,insertObject]);
 const query2 = `UPDATE users SET username = ` + mysqlString.escape(name)
 console.log(query2)
+const username = "Abiskar"
+const query3 = mysqlString.format(`UPDATE ?? SET username = ${mysqlString.escape(username)}`,[["users"]]);
+console.log(query3)
+
+console.log(query)
