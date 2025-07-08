@@ -4,6 +4,7 @@ const {
   AddBooksToRedis,
   CheckDataInRedisDatabase,
 } = require("../../redisClient/utils");
+const logger = require("../../lib/logger");
 
 const GetAllBook = async (call, callback) => {
   try {
@@ -24,6 +25,7 @@ const GetAllBook = async (call, callback) => {
     return callback(null, { books: books });
   } catch (error) {
     console.log(error);
+    logger.error(error?.message)
     return callback({
       details: "Failed to get all books",
       code: grpc.status.INTERNAL,

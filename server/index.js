@@ -84,6 +84,8 @@ sequelize
       console.log("Received event:", data);
     });
     console.log("Connected to database Successfully");
+    logger.info("Test Message for elastic search");
+    logger.error("------------------Failed--------------------");
     server.bindAsync(
       AUTHOR_HOST_URL,
       grpc.ServerCredentials.createInsecure(),
