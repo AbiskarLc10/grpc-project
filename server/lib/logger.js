@@ -3,11 +3,25 @@ const { format } = winston;
 const elkclient = require('./elasticClient');
 const { ElasticsearchTransport } = require('winston-elasticsearch');
 
+
 const esTransportOpts = {
   level: 'info',
   client: elkclient,
-  indexPrefix: 'app-logs',
+  index: 'app-logs',
+  flushInterval: 2000, 
+  waitForActiveShards: 1,
+  waitForActiveShardsTimeout: '5s',
+  pipeline: null,
+  transformer: (logData) => {
+    return {
+      '@timestamp': new Date().toISOString(),
+      level: logData.level,
+      message: logData.message,
+      meta: logData.meta || {},
+    };
+  },
 };
+
 
 const esTransport = new ElasticsearchTransport(esTransportOpts);
 const logger = winston.createLogger({

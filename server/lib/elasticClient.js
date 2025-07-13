@@ -9,15 +9,14 @@ const elkclient = new Client({
 
 const insertTestData = async () => {
   try {
-    const res = await elkclient.search({
-      index: 'store',
-      body: {
-        query: {
-          match_all: {},
-        },
-      },
-    });
-    console.log(res.hits.hits);
+  const res = await elkclient.index({
+    index: 'app-logs',
+    document: {
+      message: 'Test log',
+      timestamp: new Date().toISOString(),
+    },
+  });
+  console.log('Index response:', res);
   } catch (error) {
     console.log(error);
   }
